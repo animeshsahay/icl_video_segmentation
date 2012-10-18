@@ -1,0 +1,6 @@
+[submodule "webpy"]
+	path = webpy
+	url = git://github.com/webpy/webpy.git
+[submodule "jinja2"]
+	path = jinja2
+	url = git://github.com/mitsuhiko/jinja2.git

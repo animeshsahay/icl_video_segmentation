@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <title>File upload service</title>
+  </head>
+  <body>
+    <form method="POST" enctype="multipart/form-data" action="">
+      <input type="file" name="video" />
+      <br />
+      <select name="type">
+        {% for (key, val) in SplitType.__dict__.items() if not key.startswith("__") %}
+        <option value="{{ val }}">{{ key.replace("_", " ").capitalize() }}</option>
+        {% endfor %}
+      </select>
+      <input type="submit" />
+    </form>
+  </body>
+</html>
