@@ -2,7 +2,6 @@
 import web
 import tempfile
 import VideoWrapper
-from Client import WebClient
 from web.contrib.template import render_jinja
 
 # We only want the main index
