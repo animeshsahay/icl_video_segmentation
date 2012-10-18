@@ -6,7 +6,10 @@ class VideoWrapper:
         self.video = video
         self.start = start
         self.end = end
+        bounds = (0, self.video.get(cv.CV_CAP_PROP_FRAME_COUNT))
 
+        assert start <= end
+        assert within((start, end), bounds)
         assert self.video.isOpened()
 
     def __eq__(self, other):
@@ -31,8 +34,7 @@ class VideoWrapper:
         while self.video.grab() and frameNo <= self.end:
             (_, frame) = self.video.retrieve()
             # Convert to black and white
-            frame = cvtColor(frame, cv.CV_RGB2GRAY)
-            (_, frame) = threshold(frame, 10, 255, THRESH_BINARY)
+            frame = binarise(frame)
 
             # Splitting on black frames
             if splitType == SplitType.ON_BLACK_FRAMES and checkBlackFrame(frame):
@@ -55,6 +57,11 @@ class VideoWrapper:
             imshow("Bob", frame)
             waitKey()
 
+def binarise(frame):
+    frame = cvtColor(frame, cv.CV_RGB2GRAY)
+    (_, frame) = threshold(frame, 10, 255, THRESH_BINARY)
+    return frame
+
 def checkBlackFrame(frame):
     """ Checks if frame is entirely black. """
     for col in frame:
@@ -63,6 +70,10 @@ def checkBlackFrame(frame):
                 return False
 
     return True
+
+# (a,b) within (c,d)
+def within((a, b), (c, d)):
+    return a >= c and a <= d and b >= c and b <= d
 
 class SplitType:
     """ What to segment on. """
