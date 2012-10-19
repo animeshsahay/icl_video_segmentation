@@ -33,6 +33,24 @@ class VideoWrapper:
     def __ne__(self, other):
         return not self.__eq__(other)
 
+    def write(self, filename, codec="THEO"):
+        """
+        Writes the segment to file.
+
+        Defaults to OGG Theora (unavailable on Mac - give codec "DIVX" with
+        extension ".avi").
+        """
+        fps = self.video.get(cv.CV_CAP_PROP_FPS)
+        width = int(self.video.get(cv.CV_CAP_PROP_FRAME_WIDTH))
+        height = int(self.video.get(cv.CV_CAP_PROP_FRAME_HEIGHT))
+
+        writer = VideoWriter(filename, cv.CV_FOURCC(*codec), fps, (width, height))
+
+        self.video.set(cv.CV_CAP_PROP_POS_FRAMES, self.start)
+        for i in xrange(self.start, self.end):
+            _, frame = self.video.read()
+            writer.write(frame)
+
     def getSegments(self, splitType):
         """
         Returns a list of segments, each a subset of the original video.
