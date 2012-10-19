@@ -28,7 +28,7 @@ class Index:
   def POST(self):
     # Open a temporary file
     file = open("%s/in_%f.dat" % (directory, random()), 'wb')
-    inputs = web.input(video={}, type={})
+    inputs = web.input(video = {}, type = {}, start = {}, end = {})
     file.write(inputs['video'].value)
 
     # Flush the file
@@ -36,7 +36,7 @@ class Index:
     os.fsync(file.fileno())
     file.close()
 
-    segments = Client(file.name, int(inputs['type'])).run()
+    segments = Client(file.name, int(inputs['type']), start = int(inputs["start"]), end = int(inputs["end"])).run()
     segmentNames = []
 
     # Write each segment out (encode: THEO, container: OGG)
