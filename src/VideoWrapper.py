@@ -19,7 +19,7 @@ class VideoWrapper:
         assert video.isOpened()
 
         self.video = video
-        bounds = (0, self.video.get(cv.CV_CAP_PROP_FRAME_COUNT))
+        bounds = (0, int(self.video.get(cv.CV_CAP_PROP_FRAME_COUNT)))
 
         self.start = start if start != None else bounds[0]
         self.end = end if end != None else bounds[1]-1
