@@ -2,15 +2,30 @@
 from cv2 import *
 
 class VideoWrapper:
-    def __init__(self, video, start=0, end=200):
+    """
+    Wrapper around VideoCapture supporting segmentation.
+    """
+    def __init__(self, video, start=None, end=None):
+        """
+        Constructor takes in a VideoCapture object and an optional start and
+        end parameter for the segment.
+
+        If start is None, assume the segment starts at 0.
+        If end is None, assume the segment ends at the last valid frame in the video.
+
+        Note that the valid frames in the segment are in range [start; end],
+        i.e. end is inclusive.
+        """
+        assert video.isOpened()
+
         self.video = video
-        self.start = start
-        self.end = end
         bounds = (0, self.video.get(cv.CV_CAP_PROP_FRAME_COUNT))
 
-        assert start <= end
-        assert within((start, end), bounds)
-        assert self.video.isOpened()
+        self.start = start if start != None else bounds[0]
+        self.end = end if end != None else bounds[1]-1
+
+        assert self.start <= self.end
+        assert within((self.start, self.end), bounds)
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.start == other.start and self.end == other.end and self.video == other.video
@@ -23,6 +38,9 @@ class VideoWrapper:
         Returns a list of segments, each a subset of the original video.
         The split method depends on parameter splitType.
         Return [self] if no split was possible.
+
+        Assumes that the object was properly initialised, i.e. that self.start
+        < max frames in the video.
         """
         segments = []
         frameNo = self.start
@@ -58,6 +76,10 @@ class VideoWrapper:
             waitKey()
 
 def binarise(frame):
+    """
+    Binarise a grayscale frame. Threshold of 10 to maximise number of white
+    pixels, thereby speeding up non black frame detection in checkBlackFrame.
+    """
     frame = cvtColor(frame, cv.CV_RGB2GRAY)
     (_, frame) = threshold(frame, 10, 255, THRESH_BINARY)
     return frame

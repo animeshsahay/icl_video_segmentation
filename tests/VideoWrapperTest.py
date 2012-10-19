@@ -2,6 +2,7 @@
 import unittest
 from VideoWrapper import *
 
+# Note : Skyfall trailer has 3672 frames.
 class VideoWrapperTest(unittest.TestCase):
     def setUp(self):
         self.skyfall = VideoCapture("res/skyfall.mp4")
@@ -15,18 +16,23 @@ class VideoWrapperTest(unittest.TestCase):
         except AssertionError, _:
             pass
 
-    # start <= end in all segments
-    def test_startLesserThanEndRec(self):
+    # Check that generating video segments does not fail in any way
+    def test_segmentGenerationSuceeds(self):
         vids = [self.instance]
 
+        children = None
         for vid in vids:
             self.assertLessEqual(vid.start, vid.end)
-            children = vid.getSegments(SplitType.ON_BLACK_FRAMES)
+            try:
+                children = vid.getSegments(SplitType.ON_BLACK_FRAMES)
+            except AssertionError, e:
+                self.fail("getSegments() call failed on AssertionError : " + e.args)
 
             # Not finished, append
             if children != [vid]:
                 vids += children
 
+    # Trying to split a one frame video should return a singleton list containing the video
     def test_unsplittableReturnsItself(self):
         self.assertEqual(self.empty.getSegments(SplitType.ON_BLACK_FRAMES), [self.empty])
 
@@ -40,6 +46,7 @@ class VideoWrapperTest(unittest.TestCase):
         b = VideoWrapper(self.skyfall, 1, 2)
         self.assertNotEqual(a, b)
 
+    # Giving an inexisting video should fail
     def test_faultsOnEmptyVideo(self):
         try:
             VideoWrapper(VideoCapture("empty"))
@@ -60,14 +67,16 @@ class VideoWrapperTest(unittest.TestCase):
         except AssertionError, _:
             pass
 
-    def test_blackFrames(self):
+    def test_blackFramesOnBlackFrame(self):
         self.skyfall.set(cv.CV_CAP_PROP_POS_FRAMES, 0)
         (_, blackFrame) = self.skyfall.read()
+               
+        self.assertTrue(checkBlackFrame(binarise(blackFrame)))
+
+    def test_blackFramesOnOtherFrame(self):
         self.skyfall.set(cv.CV_CAP_PROP_POS_FRAMES, 31)
         (_, notSoBlackFrame) = self.skyfall.read()
 
-        
-        self.assertTrue(checkBlackFrame(binarise(blackFrame)))
         self.assertFalse(checkBlackFrame(binarise(notSoBlackFrame)))
 
 if __name__ == '__main__':
