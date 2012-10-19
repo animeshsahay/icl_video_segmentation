@@ -74,7 +74,8 @@ class VideoWrapper:
 
             # Splitting on black frames
             if splitType == SplitType.ON_BLACK_FRAMES and checkBlackFrame(frame):
-                segments.append(VideoWrapper(self.video, currStart, frameNo))
+                if frameNo-currStart > 0:
+                   segments.append(VideoWrapper(self.video, currStart, frameNo))
                 currStart = frameNo+1
 
             frameNo += 1
