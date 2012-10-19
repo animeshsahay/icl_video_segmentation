@@ -65,6 +65,7 @@ class VideoWrapper:
         currStart = self.start
 
         self.video.set(cv.CV_CAP_PROP_POS_FRAMES, self.start)
+        fps = int(self.video.get(cv.CV_CAP_PROP_FPS))
 
         # Grabs until frameNo=self.end or until actual end of the video is reached
         while self.video.grab() and frameNo <= self.end:
@@ -77,6 +78,10 @@ class VideoWrapper:
                 if frameNo-currStart > 0:
                    segments.append(VideoWrapper(self.video, currStart, frameNo))
                 currStart = frameNo+1
+            elif splitType == SplitType.EVERY_SECOND:
+                if frameNo % fps == 0 or frameNo == self.end:
+                    segments.append(VideoWrapper(self.video, currStart, frameNo))
+                    currStart = frameNo+1
 
             frameNo += 1
 
@@ -119,4 +124,5 @@ def within((a, b), (c, d)):
 class SplitType:
     """ What to segment on. """
     ON_BLACK_FRAMES=0
+    EVERY_SECOND=1
     # on faces...
