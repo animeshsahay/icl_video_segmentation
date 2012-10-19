@@ -36,7 +36,16 @@ class Index:
     os.fsync(file.fileno())
     file.close()
 
-    segments = Client(file.name, int(inputs['type']), start = int(inputs["start"]), end = int(inputs["end"])).run()
+    start = None
+    end = None
+
+    if len(inputs["start"]) > 0:
+      start = int(inputs["start"])
+
+    if len(inputs["end"]) > 0:
+      end = int(inputs["end"])
+
+    segments = Client(file.name, int(inputs['type']), start, end).run()
     segmentNames = []
 
     # Write each segment out (encode: THEO, container: OGG)

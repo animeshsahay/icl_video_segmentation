@@ -11,9 +11,9 @@ class Client:
     if isinstance(video, VideoWrapper):
       self.video = video
     elif isinstance(video, type(cv2.VideoCapture())):
-      self.video = VideoWrapper(video, start = start, end = end)
+      self.video = VideoWrapper(video, start, end)
     elif isinstance(video, str):
-      self.video = VideoWrapper(cv2.VideoCapture(video), start = start, end = end)
+      self.video = VideoWrapper(cv2.VideoCapture(video), start, end)
     else:
       assert 0, ("Unknown type of video parameter (%s)" % type(video))
 
