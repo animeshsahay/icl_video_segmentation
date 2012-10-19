@@ -1,9 +1,11 @@
 TOP=$(shell pwd)
 export PYTHONPATH:=$(TOP)/src:$(TOP)/tests:$(PYTHONPATH)
 
-.PHONY: src
+shell:
+	rm -f .pystart
+	echo "from cv2 import *; from VideoWrapper import *" > .pystart
+	PYTHONSTARTUP="./.pystart" python 
+	rm -f .pystart
 
-src:
-	cd src && python VideoWrapper.py
-test: src
-	python 'tests/VideoWrapperTest.py'
+test:
+	python -m unittest discover -s 'tests/' -p '*Test.py'
