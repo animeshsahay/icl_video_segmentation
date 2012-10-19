@@ -79,7 +79,7 @@ class VideoWrapper:
                    segments.append(VideoWrapper(self.video, currStart, frameNo))
                 currStart = frameNo+1
             elif splitType == SplitType.EVERY_SECOND:
-                if frameNo % fps == 0 or frameNo == self.end:
+                if ((frameNo - self.start) % fps == 0 and frameNo > self.start) or frameNo == self.end:
                     segments.append(VideoWrapper(self.video, currStart, frameNo))
                     currStart = frameNo+1
 
