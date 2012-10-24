@@ -9,7 +9,8 @@ from web.contrib.template import render_jinja
 
 # We only want the main index
 urls = (
-  '/', 'Index'
+  '/', 'Index',
+  '/video/(.*)', 'VideoHandler'
 )
 
 # Create an app and render context
@@ -21,14 +22,13 @@ directory = tempfile.mkdtemp()
 class Index:
   # On GET, we just display the jinja page
   def GET(self):
-    print VideoWrapper.SplitType.__dict__
     return render.index(SplitType = VideoWrapper.SplitType)
 
   # On POST, we create a client
   def POST(self):
     # Open a temporary file
     file = open("%s/in_%f.dat" % (directory, random()), 'wb')
-    inputs = web.input(video={}, type={})
+    inputs = web.input(video = {}, type = {}, start = {}, end = {})
     file.write(inputs['video'].value)
 
     # Flush the file
@@ -36,7 +36,31 @@ class Index:
     os.fsync(file.fileno())
     file.close()
 
-    return Client(file.name, int(inputs['type'])).run()
+    start = None
+    end = None
+
+    if len(inputs["start"]) > 0:
+      start = int(inputs["start"])
+
+    if len(inputs["end"]) > 0:
+      end = int(inputs["end"])
+
+    segments = Client(file.name, int(inputs['type']), start, end).run()
+    segmentNames = []
+
+    # Write each segment out (encode: THEO, container: OGG)
+    for segment in segments:
+      rnd = str(random())
+      segmentNames.append("video/%s" % rnd)
+      segment.write("%s/out_%s.ogg" % (directory, rnd))
+
+    return render.video(segments = segmentNames)
+
+# Handles requests for videos
+class VideoHandler:
+  def GET(self, name):
+    file = open("%s/out_%s.ogg" % (directory, name), "rb")
+    return file.read()
 
 # If we run this file, start the web server
 if __name__ == "__main__":

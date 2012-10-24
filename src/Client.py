@@ -6,14 +6,14 @@ from VideoWrapper import VideoWrapper, SplitType
 class Client:
   # Initialise the client class.
   # The video can be of type string, cv image or video wrapper.
-  def __init__(self, video, splitType):
+  def __init__(self, video, splitType, start = None, end = None):
     self.splitType = splitType
     if isinstance(video, VideoWrapper):
       self.video = video
     elif isinstance(video, type(cv2.VideoCapture())):
-      self.video = VideoWrapper(video)
+      self.video = VideoWrapper(video, start, end)
     elif isinstance(video, str):
-      self.video = VideoWrapper(cv2.VideoCapture(video))
+      self.video = VideoWrapper(cv2.VideoCapture(video), start, end)
     else:
       assert 0, ("Unknown type of video parameter (%s)" % type(video))
 

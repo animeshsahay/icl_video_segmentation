@@ -19,7 +19,7 @@ class VideoWrapper:
         assert video.isOpened()
 
         self.video = video
-        self.bounds = (0, self.video.get(cv.CV_CAP_PROP_FRAME_COUNT))
+        self.bounds = (0, int(self.video.get(cv.CV_CAP_PROP_FRAME_COUNT)))
 
         self.start = start if start != None else self.bounds[0]
         self.end = end if end != None else self.bounds[1]-1
@@ -32,6 +32,24 @@ class VideoWrapper:
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+    def write(self, filename, codec="THEO"):
+        """
+        Writes the segment to file.
+
+        Defaults to OGG Theora (unavailable on Mac - give codec "DIVX" with
+        extension ".avi").
+        """
+        fps = self.video.get(cv.CV_CAP_PROP_FPS)
+        width = int(self.video.get(cv.CV_CAP_PROP_FRAME_WIDTH))
+        height = int(self.video.get(cv.CV_CAP_PROP_FRAME_HEIGHT))
+
+        writer = VideoWriter(filename, cv.CV_FOURCC(*codec), fps, (width, height))
+
+        self.video.set(cv.CV_CAP_PROP_POS_FRAMES, self.start)
+        for i in xrange(self.start, self.end):
+            _, frame = self.video.read()
+            writer.write(frame)
 
     def getSegments(self, splitType):
         """
@@ -47,6 +65,7 @@ class VideoWrapper:
         currStart = self.start
 
         self.video.set(cv.CV_CAP_PROP_POS_FRAMES, self.start)
+        fps = int(self.video.get(cv.CV_CAP_PROP_FPS))
 
         # Grabs until frameNo=self.end or until actual end of the video is reached
         while self.video.grab() and frameNo <= self.end:
@@ -56,8 +75,13 @@ class VideoWrapper:
 
             # Splitting on black frames
             if splitType == SplitType.ON_BLACK_FRAMES and checkBlackFrame(frame):
-                segments.append(VideoWrapper(self.video, currStart, frameNo))
+                if frameNo-currStart > 0:
+                   segments.append(VideoWrapper(self.video, currStart, frameNo))
                 currStart = frameNo+1
+            elif splitType == SplitType.EVERY_SECOND:
+                if ((frameNo - self.start) % fps == 0 and frameNo > self.start) or frameNo == self.end:
+                    segments.append(VideoWrapper(self.video, currStart, frameNo))
+                    currStart = frameNo+1
 
             frameNo += 1
 
@@ -110,4 +134,5 @@ def within((a, b), (c, d)):
 class SplitType:
     """ What to segment on. """
     ON_BLACK_FRAMES=0
+    EVERY_SECOND=1
     # on faces...

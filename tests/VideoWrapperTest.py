@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import unittest
+import sys
 from VideoWrapper import *
 
 # Note : Skyfall trailer has 3672 frames.
@@ -17,7 +18,7 @@ class VideoWrapperTest(unittest.TestCase):
             pass
 
     # Check that generating video segments does not fail in any way
-    @unittest.skip("Too long")
+    @unittest.skip("only fast tests are run")
     def test_segmentGenerationSuceeds(self):
         vids = [self.instance]
 
