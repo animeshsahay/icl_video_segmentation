@@ -59,6 +59,7 @@ class Index:
 # Handles requests for videos
 class VideoHandler:
   def GET(self, name):
+    web.header("Content-Type", "video/ogg")
     file = open("%s/out_%s.ogg" % (directory, name), "rb")
     return file.read()
 
