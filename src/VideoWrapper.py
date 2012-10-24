@@ -19,13 +19,13 @@ class VideoWrapper:
         assert video.isOpened()
 
         self.video = video
-        bounds = (0, self.video.get(cv.CV_CAP_PROP_FRAME_COUNT))
+        self.bounds = (0, self.video.get(cv.CV_CAP_PROP_FRAME_COUNT))
 
-        self.start = start if start != None else bounds[0]
-        self.end = end if end != None else bounds[1]-1
+        self.start = start if start != None else self.bounds[0]
+        self.end = end if end != None else self.bounds[1]-1
 
         assert self.start <= self.end
-        assert within((self.start, self.end), bounds)
+        assert within((self.start, self.end), self.bounds)
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.start == other.start and self.end == other.end and self.video == other.video
@@ -74,6 +74,16 @@ class VideoWrapper:
             (_, frame) = self.video.read()
             imshow("Bob", frame)
             waitKey()
+
+    def getFrame(self, frameNo):
+        """ Returns a single frame given a frame number. """
+        actualFrameNo = self.start + frameNo
+
+        assert(self.bounds[0] <= actualFrameNo)
+        assert(actualFrameNo <= self.bounds[1])
+
+        self.video.set(cv.CV_CAP_PROP_POS_FRAMES, actualFrameNo)
+        return self.video.read()[1]
 
 def binarise(frame):
     """
