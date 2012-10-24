@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from cv2 import *
-from video import create_capture
 
 class VideoWrapper:
     """
@@ -20,13 +19,13 @@ class VideoWrapper:
         assert video.isOpened()
 
         self.video = video
-        bounds = (0, int(self.video.get(cv.CV_CAP_PROP_FRAME_COUNT)))
+        self.bounds = (0, int(self.video.get(cv.CV_CAP_PROP_FRAME_COUNT)))
 
-        self.start = start if start != None else bounds[0]
-        self.end = end if end != None else bounds[1]-1
+        self.start = start if start != None else self.bounds[0]
+        self.end = end if end != None else self.bounds[1]-1
 
         assert self.start <= self.end
-        assert within((self.start, self.end), bounds)
+        assert within((self.start, self.end), self.bounds)
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.start == other.start and self.end == other.end and self.video == other.video
@@ -100,27 +99,15 @@ class VideoWrapper:
             imshow("Bob", frame)
             waitKey()
 
-    def detect(self)
-        video_src = 0
-        cascade_fn = "haarcascades/haarcascade_frontalface_default.xml"
-        # Create a new CascadeClassifier from given cascade file:
-        cascade = cv2.CascadeClassifier(cascade_fn)
-        cam = create_capture(video_src)
-    
-        while True:
-            ret, img = cam.read()
-            # Do a little preprocessing:
-            img_copy = cv2.resize(img, (img.shape[1]/2, img.shape[0]/2))
-            gray = cv2.cvtColor(img_copy, cv2.COLOR_BGR2GRAY)
-            gray = cv2.equalizeHist(gray)
-            # Detect the faces (probably research for the options!):
-            rects = cascade.detectMultiScale(gray)
-            # Make a copy as we don't want to draw on the original image:
-            for x, y, width, height in rects:
-                cv2.rectangle(img_copy, (x, y), (x+width, y+height), (255,0,0), 2)
-            cv2.imshow('facedetect', img_copy)
-            if cv2.waitKey(20) == 27:
-                break
+    def getFrame(self, frameNo):
+        """ Returns a single frame given a frame number. """
+        actualFrameNo = self.start + frameNo
+
+        assert(self.bounds[0] <= actualFrameNo)
+        assert(actualFrameNo <= self.bounds[1])
+
+        self.video.set(cv.CV_CAP_PROP_POS_FRAMES, actualFrameNo)
+        return self.video.read()[1]
 
 def binarise(frame):
     """

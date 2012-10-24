@@ -81,5 +81,19 @@ class VideoWrapperTest(unittest.TestCase):
 
         self.assertFalse(checkBlackFrame(binarise(notSoBlackFrame)))
 
+    def test_getFrameLower(self):
+        try:
+            self.instance.getFrame(-1)
+            self.fail("Didn't raise AssertionError on negative frame index")
+        except AssertionError, _:
+            pass
+
+    def test_getFrameHigher(self):
+        try:
+            self.instance.getFrame(3673)
+            self.fail("Didn't raise AssertionError on above upper bound frame index")
+        except AssertionError, _:
+            pass
+
 if __name__ == '__main__':
     unittest.main()
