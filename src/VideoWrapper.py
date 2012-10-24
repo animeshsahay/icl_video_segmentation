@@ -104,7 +104,8 @@ class VideoWrapper:
             img_copy = cvtColor(frame, COLOR_BGR2GRAY)
             img_copy = equalizeHist(img_copy)
             rects = cascade.detectMultiScale(img_copy, minNeighbors = 11, flags = cv.CV_HAAR_SCALE_IMAGE, minSize = (30, 30))
-            faces.append((frameNo, rects))
+            if len(rects) > 0:
+                faces.append((frameNo, rects))
             frameNo += 1
         return faces
 
