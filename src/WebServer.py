@@ -54,13 +54,59 @@ class Index:
       segmentNames.append("video/%s" % rnd)
       segment.write("%s/out_%s.ogg" % (directory, rnd))
 
+      sizefile = open("%s/out_%s.size" % (directory, rnd), "wb")
+      sizefile.write("%f" % segment.length)
+
+      # Flush the file
+      sizefile.flush()
+      os.fsync(sizefile.fileno())
+      sizefile.close()
+
     return render.video(segments = segmentNames)
 
 # Handles requests for videos
 class VideoHandler:
   def GET(self, name):
-    file = open("%s/out_%s.ogg" % (directory, name), "rb")
-    return file.read()
+    # Initialise wanted variables
+    filename = "%s/out_%s" % (directory, name)
+    len = os.path.getsize(filename + ".ogg")
+    range = web.ctx.env.get("HTTP_RANGE")
+    file = open(filename + ".ogg", "rb")
+
+    # Setup the common headers
+    web.header("Content-Type", "video/ogg")
+    web.header("Accept-Ranges", "bytes");
+    web.header("X-Content-Duration", float(open(filename + ".size").read()));
+
+    # If the whole file is wanted, return the whole file
+    if not range:
+      web.header("Content-Length", len)
+      return file.read()
+
+    # Otherwise return partial content
+    web.ctx.status = "206 Partial Content"
+
+    # Get the size of the chunck
+    _, r = range.split("=")
+    f, t = r.split("-")
+    f = int(f)
+
+    # "To" doesn't have to be specified. If it isn't, set it.
+    if t != "" and int(t) < len:
+      t = int(t)
+    else:
+      t = len - 1
+
+    # We want a positive sized chunk
+    assert f < t
+
+    # Setup the correct headers for partial content
+    web.header("Content-Length", t - f + 1)
+    web.header("Content-Range", "bytes %d-%d/%d" % (f, t, len))
+
+    # Return the chunk
+    file.seek(f);
+    return file.read()[0:t - f + 1]
 
 # If we run this file, start the web server
 if __name__ == "__main__":

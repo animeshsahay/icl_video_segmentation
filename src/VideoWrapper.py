@@ -22,7 +22,9 @@ class VideoWrapper:
         self.bounds = (0, int(self.video.get(cv.CV_CAP_PROP_FRAME_COUNT)))
 
         self.start = start if start != None else self.bounds[0]
-        self.end = end if end != None else self.bounds[1]-1
+        self.end = end if end != None else self.bounds[1] - 1
+        self.fps = self.video.get(cv.CV_CAP_PROP_FPS)
+        self.length = (self.end - self.start) / self.fps
 
         assert self.start <= self.end
         assert within((self.start, self.end), self.bounds)
@@ -40,11 +42,10 @@ class VideoWrapper:
         Defaults to OGG Theora (unavailable on Mac - give codec "DIVX" with
         extension ".avi").
         """
-        fps = self.video.get(cv.CV_CAP_PROP_FPS)
         width = int(self.video.get(cv.CV_CAP_PROP_FRAME_WIDTH))
         height = int(self.video.get(cv.CV_CAP_PROP_FRAME_HEIGHT))
 
-        writer = VideoWriter(filename, cv.CV_FOURCC(*codec), fps, (width, height))
+        writer = VideoWriter(filename, cv.CV_FOURCC(*codec), self.fps, (width, height))
 
         self.video.set(cv.CV_CAP_PROP_POS_FRAMES, self.start)
         for i in xrange(self.start, self.end):
@@ -65,7 +66,6 @@ class VideoWrapper:
         currStart = self.start
 
         self.video.set(cv.CV_CAP_PROP_POS_FRAMES, self.start)
-        fps = int(self.video.get(cv.CV_CAP_PROP_FPS))
 
         # Grabs until frameNo=self.end or until actual end of the video is reached
         while self.video.grab() and frameNo <= self.end:
@@ -79,7 +79,7 @@ class VideoWrapper:
                    segments.append(VideoWrapper(self.video, currStart, frameNo))
                 currStart = frameNo+1
             elif splitType == SplitType.EVERY_SECOND:
-                if ((frameNo - self.start) % fps == 0 and frameNo > self.start) or frameNo == self.end:
+                if ((frameNo - self.start) % int(self.fps) == 0 and frameNo > self.start) or frameNo == self.end:
                     segments.append(VideoWrapper(self.video, currStart, frameNo))
                     currStart = frameNo+1
 
@@ -90,6 +90,24 @@ class VideoWrapper:
             return [self]
  
         return segments
+
+    def getFaces(self):
+        cascadefile = "haarcascade_frontalface_default.xml"
+        cascade = CascadeClassifier(cascadefile)
+
+        faces = []
+
+        self.video.set(cv.CV_CAP_PROP_POS_FRAMES, self.start)
+        frameNo = self.start
+        while self.video.grab() and frameNo <= self.end:
+            (_, frame) = self.video.retrieve()
+            img_copy = cvtColor(frame, COLOR_BGR2GRAY)
+            img_copy = equalizeHist(img_copy)
+            rects = cascade.detectMultiScale(img_copy, minNeighbors = 11, flags = cv.CV_HAAR_SCALE_IMAGE, minSize = (30, 30))
+            if len(rects) > 0:
+                faces.append((frameNo, rects))
+            frameNo += 1
+        return faces
 
     def play(self):
         """ Simple video player. """
