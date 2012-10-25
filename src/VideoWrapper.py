@@ -35,7 +35,7 @@ class VideoWrapper:
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def write(self, filename, codec="THEO"):
+    def write(self, filename, codec = "THEO", frameModifier = lambda frameNo, frame: frame):
         """
         Writes the segment to file.
 
@@ -50,6 +50,7 @@ class VideoWrapper:
         self.video.set(cv.CV_CAP_PROP_POS_FRAMES, self.start)
         for i in xrange(self.start, self.end):
             _, frame = self.video.read()
+            frame = frameModifier(i, frame)
             writer.write(frame)
 
     def getSegments(self, splitType):
@@ -119,12 +120,11 @@ class VideoWrapper:
 
     def getFrame(self, frameNo):
         """ Returns a single frame given a frame number. """
-        actualFrameNo = self.start + frameNo
 
-        assert(self.bounds[0] <= actualFrameNo)
-        assert(actualFrameNo <= self.bounds[1])
+        assert(self.start <= frameNo)
+        assert(frameNo <= self.end)
 
-        self.video.set(cv.CV_CAP_PROP_POS_FRAMES, actualFrameNo)
+        self.video.set(cv.CV_CAP_PROP_POS_FRAMES, frameNo)
         return self.video.read()[1]
 
 def binarise(frame):
