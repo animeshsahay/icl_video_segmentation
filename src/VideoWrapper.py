@@ -119,12 +119,11 @@ class VideoWrapper:
 
     def getFrame(self, frameNo):
         """ Returns a single frame given a frame number. """
-        actualFrameNo = self.start + frameNo
 
-        assert(self.bounds[0] <= actualFrameNo)
-        assert(actualFrameNo <= self.bounds[1])
+        assert(self.start <= frameNo)
+        assert(frameNo <= self.end)
 
-        self.video.set(cv.CV_CAP_PROP_POS_FRAMES, actualFrameNo)
+        self.video.set(cv.CV_CAP_PROP_POS_FRAMES, frameNo)
         return self.video.read()[1]
 
 def binarise(frame):
