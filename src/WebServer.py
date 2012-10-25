@@ -2,6 +2,7 @@
 import web
 import tempfile
 import os
+import cv2
 from random import random
 import VideoWrapper
 from Client import Client
@@ -28,7 +29,7 @@ class Index:
   def POST(self):
     # Open a temporary file
     file = open("%s/in_%f.dat" % (directory, random()), 'wb')
-    inputs = web.input(video = {}, type = {}, start = {}, end = {})
+    inputs = web.input(video = {}, type = {}, start = {}, end = {}, faces = {})
     file.write(inputs['video'].value)
 
     # Flush the file
@@ -52,7 +53,15 @@ class Index:
     for segment in segments:
       rnd = str(random())
       segmentNames.append("video/%s" % rnd)
-      segment.write("%s/out_%s.ogg" % (directory, rnd))
+
+      # If we want faces visible, show them
+      if inputs['faces'] == "on":
+        faces = segment.getFaces()
+        segment.write("%s/out_%s.ogg" % (directory, rnd),
+                      frameModifier = lambda frameNo, frame:
+                        integrateFace(frameNo, frame, faces))
+      else:
+        segment.write("%s/out_%s.ogg" % (directory, rnd))
 
       sizefile = open("%s/out_%s.size" % (directory, rnd), "wb")
       sizefile.write("%f" % segment.length)
@@ -111,3 +120,11 @@ class VideoHandler:
 # If we run this file, start the web server
 if __name__ == "__main__":
     app.run()
+
+def integrateFace(frameNo, frame, faces):
+  """Integrates faces into the frame if applicable"""
+  for (f, rects) in faces:
+    if f == frameNo:
+      for (x, y, width, height) in rects:
+        cv2.rectangle(frame, (x, y), (x + width, y + height), (255, 0, 0), 2)
+  return frame
