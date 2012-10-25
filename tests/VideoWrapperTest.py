@@ -9,6 +9,13 @@ class VideoWrapperTest(unittest.TestCase):
         self.skyfall = VideoCapture("res/skyfall.mp4")
         self.instance = VideoWrapper(self.skyfall, 30, 230)
         self.empty = VideoWrapper(self.skyfall, 3, 3)
+    
+        #Video instances for face detection tests.
+        self.blackFrame = VideoWrapper(self.skyfall, 184, 186)
+        self.videoWithoutFace = VideoWrapper(self.skyfall, 300, 330)
+        self.videoWithOneFace = VideoWrapper(self.skyfall, 197, 200)
+        self.videoWithTwoFaces = VideoWrapper(self.skyfall, 272, 273)
+        self.womanInTheCar = VideoWrapper(self.skyfall, 338, 351)
 
     def test_faultsOnStartBiggerThanEnd(self):
         try:
@@ -94,6 +101,34 @@ class VideoWrapperTest(unittest.TestCase):
             self.fail("Didn't raise AssertionError on above upper bound frame index")
         except AssertionError, _:
             pass
+
+    #Test cases for face detection.
+
+    #No faces should be detected in a black frame.
+    def test_getFaces_NoFaceInBlackFrame(self):
+        faces = self.blackFrame.getFaces()
+        self.assertFalse(faces)
+
+    #No faces should be detected in this exemplary video segment.
+    def test_getFaces_NoFaceInExampleFrame(self):
+        faces = self.videoWithoutFace.getFaces()
+        self.assertFalse(faces)
+
+    #There should be one face detected in this particular video segment.
+    def test_getFaces_OneFaceDetected(self):
+        faces = self.videoWithOneFace.getFaces()
+        self.assertEqual(len(faces), 1)
+
+    #Check if faces of people on the train are detected.
+    def test_getFaces_peopleOnTrainDetected(self):
+        faces = self.videoWithTwoFaces.getFaces()
+        self.assertTrue(faces)
+
+    #Check if face of the woman in the car is detected.
+    def test_getFaces_DetectFaceOfAfricanAmericanWoman(self):
+        faces = self.womanInTheCar.getFaces()
+        self.assertTrue(faces)
+
 
 if __name__ == '__main__':
     unittest.main()
