@@ -93,7 +93,7 @@ class VideoWrapper:
         # No split possible - return self
         if segments == []:
             return [self]
- 
+
         return segments
 
     def getFaces(self):

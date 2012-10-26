@@ -3,14 +3,16 @@ import unittest
 from Client import *
 
 class ClientTest(unittest.TestCase):
-  def setUp(self):
-    self.instance = Client(None, None)
+  def test_noVideo(self):
+    self.assertRaises(AssertionError, Client, None, None)
 
-  def test_notExistingVideo(self, video):
-    self.video = video
-    self.assertRaise(IOError, open, os.path.join())
+  def test_notExistingVideo(self):
+    self.assertRaises(IOError, open, "/")
 
-  def test_invalidSplitType(self, splitType):
-    self.splitType = splitType
-    validSplitTypes = [k for k in Test.__dict__.keys() if not k.startswith('__')]
-    self.assertTrue(splitType in validSplitTypes)
+  def test_validAndInvalidSplitType(self):
+    validSplitTypes = [v for (k, v) in SplitType.__dict__.items() if not k.startswith('__')]
+    for i in range(0, len(validSplitTypes)+10):
+      if i in validSplitTypes:
+        Client("res/skyfall.mp4", i)
+      else:
+        self.assertRaises(AssertionError, Client, "res/skyfall.mp4", i)
