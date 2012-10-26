@@ -78,11 +78,15 @@ class VideoWrapper:
             if splitType == SplitType.ON_BLACK_FRAMES and checkBlackFrame(frame):
                 if frameNo-currStart > 0:
                    segments.append(VideoWrapper(self.video, currStart, frameNo))
-                currStart = frameNo+1
+                currStart = frameNo + 1
             elif splitType == SplitType.EVERY_SECOND:
                 if ((frameNo - self.start) % int(self.fps) == 0 and frameNo > self.start) or frameNo == self.end:
                     segments.append(VideoWrapper(self.video, currStart, frameNo))
-                    currStart = frameNo+1
+                    currStart = frameNo + 1
+            elif splitType == SplitType.EVERY_TWO_SECONDS:
+                if ((frameNo - self.start) % int(2 * self.fps) == 0 and frameNo > self.start) or frameNo == self.end:
+                    segments.append(VideoWrapper(self.video, currStart, frameNo))
+                    currStart = frameNo + 1
 
             frameNo += 1
 
@@ -154,6 +158,7 @@ def within((a, b), (c, d)):
 
 class SplitType:
     """ What to segment on. """
-    ON_BLACK_FRAMES=0
-    EVERY_SECOND=1
+    ON_BLACK_FRAMES = 0
+    EVERY_SECOND = 1
+    EVERY_TWO_SECONDS = 2
     # on faces...
