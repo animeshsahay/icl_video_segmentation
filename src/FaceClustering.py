@@ -100,6 +100,7 @@ if __name__ == "__main__":
         for i, face in enumerate(cluster):
             imshow(str(i), faces[face])
         waitKey(0)
+        destroyAllWindows()
 
     print sim
 
