@@ -30,7 +30,7 @@ def compareFaces(f1, f2):
 
     return compareHist(h1, h2, cv.CV_COMP_BHATTACHARYYA)
 
-def clusterFaces(faces, t=0.8):
+def clusterFaces(faces, t=0.75):
     similarities = {}
     clusters = []
 
@@ -52,7 +52,7 @@ def clusterFaces(faces, t=0.8):
     return tarjan(similarities)
 
 def tarjan(graph):
-    output = set([])
+    output = []
 
     index = [0]
     indexes = {}
@@ -83,7 +83,7 @@ def tarjan(graph):
                 if succ == v:
                     break
         
-            output.add(tuple(connected_component))
+            output.append(connected_component)
 
     for v in graph:
         if v not in indexes:
@@ -95,6 +95,11 @@ if __name__ == "__main__":
     faces = readFaces(VideoWrapper(VideoCapture(sys.argv[1]), 265, 400))
 
     sim = clusterFaces(faces)
+
+    for cluster in sim:
+        for i, face in enumerate(cluster):
+            imshow(str(i), faces[face])
+        waitKey(0)
 
     print sim
 
