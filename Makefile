@@ -7,5 +7,8 @@ shell:
 	PYTHONSTARTUP="./.pystart" python 
 	rm -f .pystart
 
+cluster:
+	python src/FaceClustering.py res/skyfall.mp4
+
 test:
 	python -m unittest discover -s 'tests/' -p '*Test.py'
