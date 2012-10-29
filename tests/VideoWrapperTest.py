@@ -9,7 +9,7 @@ class VideoWrapperTest(unittest.TestCase):
         self.skyfall = VideoCapture("res/skyfall.mp4")
         self.instance = VideoWrapper(self.skyfall, 30, 230)
         self.empty = VideoWrapper(self.skyfall, 3, 3)
-    
+
         #Video instances for face detection tests.
         self.blackFrame = VideoWrapper(self.skyfall, 184, 186)
         self.videoWithoutFace = VideoWrapper(self.skyfall, 300, 330)
@@ -79,7 +79,7 @@ class VideoWrapperTest(unittest.TestCase):
     def test_blackFramesOnBlackFrame(self):
         self.skyfall.set(cv.CV_CAP_PROP_POS_FRAMES, 0)
         (_, blackFrame) = self.skyfall.read()
-               
+
         self.assertTrue(checkBlackFrame(binarise(blackFrame)))
 
     def test_blackFramesOnOtherFrame(self):

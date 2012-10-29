@@ -8,6 +8,7 @@ class Client:
   # The video can be of type string, cv image or video wrapper.
   def __init__(self, video, splitType, start = None, end = None):
     self.splitType = splitType
+    assert any(splitType == v for (k, v) in SplitType.__dict__.items() if not k.startswith('__')), "Invalid split type"
     if isinstance(video, VideoWrapper):
       self.video = video
     elif isinstance(video, type(cv2.VideoCapture())):
