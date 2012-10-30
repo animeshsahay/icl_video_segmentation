@@ -92,7 +92,7 @@ def tarjan(graph):
     return output
 
 if __name__ == "__main__":
-    faces = readFaces(VideoWrapper(VideoCapture(sys.argv[1]), 265, 400))
+    faces = readFaces(VideoWrapper(VideoCapture(sys.argv[1]), 2650, 2900))
 
     sim = clusterFaces(faces)
 
