@@ -50,23 +50,25 @@
      <string>Load</string>
     </property>
    </widget>
-   <widget class="QStackedWidget" name="videoStack">
+   <widget class="Phonon::VideoPlayer" name="videoPlayer">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>60</y>
+      <y>50</y>
       <width>921</width>
-      <height>391</height>
+      <height>371</height>
      </rect>
     </property>
-    <property name="currentIndex">
-     <number>1</number>
-    </property>
-    <widget class="QWidget" name="page"/>
-    <widget class="QWidget" name="page_2"/>
    </widget>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Phonon::VideoPlayer</class>
+   <extends>QWidget</extends>
+   <header location="global">phonon/videoplayer.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
