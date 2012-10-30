@@ -10,6 +10,19 @@ class DesktopClient(QtGui.QMainWindow):
     QtGui.QWidget.__init__(self, parent)
     self.ui = Ui_MainWindow()
     self.ui.setupUi(self)
+    
+
+    QtCore.QObject.connect(self.ui.loadButton, QtCore.SIGNAL("clicked()"), self.load)
+    QtCore.QObject.connect(self.ui.browseButton, QtCore.SIGNAL("clicked()"), self.browse)
+    
+  def browse(self):
+    file = str(QtGui.QFileDialog.getOpenFileName(self, "Open Video"))
+    self.ui.filePath.setText(file)
+ 
+  def load(self):
+    media = phonon.Phonon.MediaSource(self.ui.filePath.text())
+    self.ui.videoPlayer.load(media)
+    self.ui.videoPlayer.play()
  
 if __name__ == "__main__":
   app = QtGui.QApplication(sys.argv)

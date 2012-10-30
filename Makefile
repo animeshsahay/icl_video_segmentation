@@ -15,6 +15,8 @@ web:
 
 client:
 	python "$(TOP)/src/Client.py" ${ARGS}
+desktop:
+	python "$(TOP)/src/DesktopClient.py" ${ARGS}
 
 test:
 	python -m unittest discover -s 'tests/' -p '*Test.py'
