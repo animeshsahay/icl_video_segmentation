@@ -2,7 +2,6 @@ import cv2
 import enzyme
 
 class VideoInfo:
-    # Pre : file exists
     def __init__(self, filePath):
         self.info = enzyme.parse(filePath)
         self.video = cv2.VideoCapture(filePath)
@@ -13,6 +12,7 @@ class VideoInfo:
     def length(self):
         return int(self.numberOfFrames() / self.video.get(cv2.cv.CV_CAP_PROP_FPS))
 
+    # Pretty print methods - nice formatting of video information.
     def prettyTitle(self):
         if self.info.title == None:
             return "Unknown"

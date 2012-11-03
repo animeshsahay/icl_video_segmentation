@@ -27,16 +27,19 @@ class DesktopClient(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.lastFrameButton, QtCore.SIGNAL("clicked()"), self.setLastFrame)
 
     def setLastFrame(self):
+        """ Set the end frame to be the last frame of the video. """
         self.ui.endFrame.setText(str(self.basicInfo.numberOfFrames()))
 
     def browse(self):
+        """ Opens a system "browse" dialog box and preloads the video file. """
         file = str(QtGui.QFileDialog.getOpenFileName(self, "Open Video"))
         self.ui.filePath.setText(file)
 
         self.preload()
 
     def errorBox(self, name):
-        birthday, error = "0000", "Generic error"
+        """ Customized error box. """
+        birthday, error = "007", "Wrong video file: please load Skyfall trailer."
         if name == "Jasper":
             birthday, error = "1311", "Please enter a valid path."
         elif name == "Ben":
@@ -51,6 +54,10 @@ class DesktopClient(QtGui.QMainWindow):
         QtGui.QMessageBox.critical(self, "Error " + birthday, error)
 
     def preload(self):
+        """
+        Creates a VideoInfo object to fill in basic info about video file.
+        Does not cause any segmenting or bounds checking to occur.
+        """
         try:
             self.basicInfo = VideoInfo(str(self.ui.filePath.text()))
         except:
@@ -64,16 +71,22 @@ class DesktopClient(QtGui.QMainWindow):
         self.ui.lastFrameButton.setEnabled(True)
 
     def load(self, segment):
+        """ 
+        Loads but does not play a video file.
+        Makes sure the first frame is shown by calling "pause()".
+        """
         media = phonon.Phonon.MediaSource(segment)
         self.ui.videoPlayer.load(media)
         self.ui.videoPlayer.pause()
 
     def next(self):
+        """ Grabs next segment, loads it, and updates GUI accordingly. """
         self.load(self.segments.next())
         self.updateSegLabel()
         self.updatePreviousNextButton()
 
     def previous(self):
+        """ Grabs previous segment, loads it, and updates GUI accordingly. """
         self.load(self.segments.previous())
         self.updateSegLabel()
         self.updatePreviousNextButton()
@@ -82,10 +95,15 @@ class DesktopClient(QtGui.QMainWindow):
         self.ui.currSeg.setText("Current segment: " + str(self.segments.index+1) + "/" + str(self.segments.length()))
 
     def updatePreviousNextButton(self):
+        """
+        Enable or disable the "previous" and "next" buttons depending on the 
+        index of the current segment.
+        """
         self.ui.previousButton.setDisabled(self.segments.first())
         self.ui.nextButton.setDisabled(self.segments.last())
 
     def setControls(self, enabled):
+        """ Global GUI button toggle. """
         self.ui.pauseButton.setEnabled(enabled)
         self.ui.playButton.setEnabled(enabled)
         self.ui.nextButton.setEnabled(enabled)
@@ -99,6 +117,7 @@ class DesktopClient(QtGui.QMainWindow):
 
     # TODO : Define a split type for when nothing is ticked
     def getSplitType(self):
+        """ Radio button options to SplitType map. """
         if self.ui.blackFramesOption.isChecked():
             return SplitType.ON_BLACK_FRAMES
         if self.ui.everySecondOption.isChecked():
@@ -109,6 +128,10 @@ class DesktopClient(QtGui.QMainWindow):
         return None
 
     def segment(self):
+        """
+        Calls the Client class to perform segmenting. Handles bound checking
+        errors. Fills in segment register and updates GUI (button activation).
+        """
         self.setControls(False)
         self.currSegment = 0
 
