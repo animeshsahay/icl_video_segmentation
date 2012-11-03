@@ -1,6 +1,6 @@
 ARGS ?=
 TOP = $(shell pwd)
-export PYTHONPATH := $(TOP)/webpy:$(TOP)/jinja2:$(TOP)/src:$(TOP)/tests:$(PYTHONPATH)
+export PYTHONPATH := $(TOP)/enzyme:$(TOP)/webpy:$(TOP)/jinja2:$(TOP)/src:$(TOP)/tests:$(PYTHONPATH)
 
 shell:
 	rm -f .pystart

@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 from cv2 import *
 
+class BoundsError(Exception):
+    def __init__(self):
+        return
+
+
 class VideoWrapper:
     """
     Wrapper around VideoCapture supporting segmentation.
@@ -16,7 +21,9 @@ class VideoWrapper:
         Note that the valid frames in the segment are in range [start; end],
         i.e. end is inclusive.
         """
-        assert video.isOpened()
+        if not video.isOpened():
+            print "Hello"
+            raise IOError
 
         self.video = video
         self.bounds = (0, int(self.video.get(cv.CV_CAP_PROP_FRAME_COUNT)))
@@ -26,8 +33,8 @@ class VideoWrapper:
         self.fps = self.video.get(cv.CV_CAP_PROP_FPS)
         self.length = (self.end - self.start) / self.fps
 
-        assert self.start <= self.end
-        assert within((self.start, self.end), self.bounds)
+        if not (self.start <= self.end and within((self.start, self.end), self.bounds)):
+            raise BoundsError()
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.start == other.start and self.end == other.end and self.video == other.video
