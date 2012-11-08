@@ -1,30 +1,19 @@
 <html>
-  <head>
-    <title>File upload service</title>
-    <link rel="stylesheet" type="text/css" href="static/main.css" />
-  </head>
-  <body>
-    <div class="Menu MenuShow FadeIn">
-      <div class="MenuOutline"></div>
-      <div class="MenuContent AlignCentre">
-        <form method="POST" enctype="multipart/form-data" action="">
-          <input type="file" name="video" />
-          <br />
-          Start frame: <input type="text" name="start" />
-          <br />
-          End frame: <input type="text" name="end" />
-          <br />
-          <select name="type">
-            {% for (key, val) in SplitType.__dict__.items() if not key.startswith("__") %}
-            <option value="{{ val }}">{{ key.replace("_", " ").capitalize() }}</option>
-            {% endfor %}
-          </select>
-	  <br />
-	  <input type="checkbox" name="faces" />Show detected faces
-          <br />
-          <input type="submit" />
-        </form>
-      </div>
-    </div>
-  </body>
+<head>
+<title>Segmentation and Clustering Interface</title>
+</head>
+<body style="margin: 0; background-color: #000030">
+<div style="font-size:250%; text-align: center; border-bottom: 3px solid; width:100%; margin-bottom: 0px; background-color:#BBBBBB">Video segmentation and face clustering interface</div>
+<div style="width: 80%; margin-left: 10%; background-color: #999999; margin-top: 10px; -moz-border-radius: 15px; border-radius: 15px; padding: 40px">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus nec risus nunc, venenatis porttitor nisi. Pellentesque non sapien id tortor bibendum tincidunt. Fusce sagittis porta malesuada. Sed venenatis, augue sit amet placerat viverra, augue augue molestie sem, et aliquam odio turpis vel enim. Duis egestas sollicitudin erat. Fusce tempor dignissim commodo. Mauris ultricies nibh sed enim venenatis dignissim. Nullam tempor consectetur leo accumsan gravida. Suspendisse non elit sed quam fringilla blandit.
+<br />
+Morbi eu lacus vel sapien venenatis tristique sit amet nec purus. Sed eget enim dolor. Pellentesque dictum tortor ac odio aliquam vulputate. Duis in dui ligula. Sed in tellus in orci tristique venenatis. Donec et turpis non augue cursus consectetur sit amet vitae purus. Nam at dignissim urna. Vivamus mattis semper convallis.
+<br />
+In mollis elit non purus tristique venenatis rhoncus massa convallis. Aliquam laoreet, tellus vitae pharetra egestas, diam ligula rutrum turpis, eu rhoncus purus nisl id enim. Donec id nisi eu ligula dapibus semper sed ut arcu. Proin aliquam, leo sit amet viverra viverra, lacus lectus sagittis velit, quis tincidunt est quam vitae lorem. Nulla facilisi. Nunc pellentesque vestibulum neque, at iaculis libero posuere ac. Sed id ligula massa, rhoncus posuere diam. Donec suscipit egestas orci, eget dictum turpis bibendum eu. Fusce vitae pharetra mi. Quisque a ante erat. Nam gravida pulvinar velit ut euismod. Donec quam libero, fermentum nec interdum non, commodo id risus. Maecenas placerat auctor congue. Sed eget quam vitae mi cursus adipiscing. Fusce fringilla, nisi at molestie scelerisque, metus urna tempus nulla, vitae dapibus quam tortor vel diam. Integer lacus lorem, venenatis feugiat consequat id, scelerisque eu ligula.
+<br />
+Donec interdum consequat massa, ac rutrum enim vulputate non. Nulla commodo diam mi, eu porta tortor. Aenean gravida magna nec lacus facilisis malesuada. Praesent et nunc nibh, vel eleifend sapien. Mauris ac justo eros, id pharetra sapien. Nullam vitae commodo lacus. Quisque lacinia molestie commodo. Morbi sit amet porta lectus. Suspendisse potenti. Cras tellus dui, ornare scelerisque ultrices eu, euismod vel sem. Nullam tempus, turpis vitae lobortis lacinia, arcu ipsum auctor eros, nec adipiscing libero magna eu tellus.
+<br />
+Phasellus nec accumsan purus. Vestibulum mollis, magna eu posuere rutrum, sem enim aliquet nunc, vel placerat eros purus non ligula. Maecenas elementum pulvinar eleifend. Nullam iaculis posuere fermentum. Nulla erat ipsum, feugiat at congue feugiat, hendrerit non urna. Sed rutrum dolor sed purus lacinia malesuada. Curabitur non sapien diam. Quisque sed eros eu lacus dictum molestie. Ut diam metus, iaculis sed egestas et, ornare eu augue. Vivamus bibendum, massa ut suscipit volutpat, massa tellus iaculis urna, in vulputate sapien dui in lacus.
+</div>
+</body>
 </html>
