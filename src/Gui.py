@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui.ui'
 #
-# Created: Sat Nov  3 15:11:52 2012
+# Created: Thu Nov  8 19:43:16 2012
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -48,7 +48,7 @@ class Ui_MainWindow(object):
         self.videoPlayer.setGeometry(QtCore.QRect(20, 40, 961, 471))
         self.videoPlayer.setObjectName(_fromUtf8("videoPlayer"))
         self.groupBox = QtGui.QGroupBox(self.centralwidget)
-        self.groupBox.setGeometry(QtCore.QRect(1000, 10, 281, 331))
+        self.groupBox.setGeometry(QtCore.QRect(1000, 10, 281, 351))
         font = QtGui.QFont()
         font.setPointSize(11)
         font.setBold(True)
@@ -63,7 +63,7 @@ class Ui_MainWindow(object):
         self.segProgress = QtGui.QProgressBar(self.groupBox)
         self.segProgress.setGeometry(QtCore.QRect(10, 300, 211, 23))
         self.segProgress.setMaximum(100)
-        self.segProgress.setProperty("value", 50)
+        self.segProgress.setProperty("value", 0)
         self.segProgress.setObjectName(_fromUtf8("segProgress"))
         self.blackFramesOption = QtGui.QRadioButton(self.groupBox)
         self.blackFramesOption.setGeometry(QtCore.QRect(20, 50, 141, 22))
@@ -100,6 +100,10 @@ class Ui_MainWindow(object):
         self.lastFrameButton.setGeometry(QtCore.QRect(130, 200, 81, 27))
         self.lastFrameButton.setCheckable(False)
         self.lastFrameButton.setObjectName(_fromUtf8("lastFrameButton"))
+        self.barState = QtGui.QLabel(self.groupBox)
+        self.barState.setGeometry(QtCore.QRect(10, 330, 261, 20))
+        self.barState.setText(_fromUtf8(""))
+        self.barState.setObjectName(_fromUtf8("barState"))
         self.previousButton = QtGui.QPushButton(self.centralwidget)
         self.previousButton.setEnabled(False)
         self.previousButton.setGeometry(QtCore.QRect(20, 520, 98, 27))
@@ -125,7 +129,7 @@ class Ui_MainWindow(object):
         self.videoBackground.setTitle(_fromUtf8(""))
         self.videoBackground.setObjectName(_fromUtf8("videoBackground"))
         self.groupBox_2 = QtGui.QGroupBox(self.centralwidget)
-        self.groupBox_2.setGeometry(QtCore.QRect(1000, 360, 281, 181))
+        self.groupBox_2.setGeometry(QtCore.QRect(1000, 380, 281, 161))
         font = QtGui.QFont()
         font.setBold(True)
         font.setWeight(75)
@@ -147,7 +151,7 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Skyfall Splitter", None, QtGui.QApplication.UnicodeUTF8))
+        MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Video Segmentation", None, QtGui.QApplication.UnicodeUTF8))
         self.filePath.setPlaceholderText(QtGui.QApplication.translate("MainWindow", "Please load a video file.", None, QtGui.QApplication.UnicodeUTF8))
         self.browseButton.setText(QtGui.QApplication.translate("MainWindow", "Browse", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox.setTitle(QtGui.QApplication.translate("MainWindow", "Options", None, QtGui.QApplication.UnicodeUTF8))

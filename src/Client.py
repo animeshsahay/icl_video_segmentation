@@ -1,33 +1,53 @@
 #!/usr/bin/env python
-import cv2
+from cv2 import *
 import sys
 import tempfile
 import os
 from random import random
-from VideoWrapper import VideoWrapper, SplitType
+from VideoWrapper import VideoWrapper
+from PyQt4 import QtCore
+from PyQt4 import QtGui
+from Segmenter import *
 
 class Client:
     # Initialise the client class.
     # The video can be of type string, cv image or video wrapper.
-    def __init__(self, video, splitType, start = None, end = None):
+    def __init__(self, video, splitType, progressBar, label, start = None, end = None):
         self.splitType = splitType
+        self.progressBar = progressBar
+        self.barState = label
         assert any(splitType == v for (k, v) in SplitType.__dict__.items() if not k.startswith('__')), "Invalid split type"
         if isinstance(video, VideoWrapper):
-            self.video = video
-        elif isinstance(video, type(cv2.VideoCapture())):
-            self.video = VideoWrapper(video, start, end)
+            self.videoWrapper = video
+        elif isinstance(video, type(VideoCapture())):
+            self.videoWrapper = VideoWrapper(video, start, end)
         elif isinstance(video, str):
-            self.video = VideoWrapper(cv2.VideoCapture(video), start, end)
+            self.videoWrapper = VideoWrapper(VideoCapture(video), start, end)
         else:
             assert 0, ("Unknown type of video parameter (%s)" % type(video))
 
     # Run the correct functions based on what the client wants.
-    def run(self, highlight):
-        segments = self.video.getSegments(self.splitType)
+    def run(self, highlight, seg):
+        # set arguments in Segmenter and start the segmentation        
+        seg.setArgs(self.videoWrapper.start, self.videoWrapper.end, self.videoWrapper.fps, self.videoWrapper.video, self.splitType)
+        seg.run()
+
+        # Changing the progress bar label text
+        self.barState.setText("Step 2/2: Writing segments to files...")
+
+        # Writing segments into files:
+        segments = seg.segments
         segmentNames = []
         directory = tempfile.mkdtemp()
-
+        
+        # set bar to 1% so there's something there while waiting for the first iteration to complete
+        self.progressBar.setProperty("value", 1)
+        
+        # the i is used as a loop counter for the progress bar
+        i = 1
         for segment in segments:
+            self.progressBar.setProperty("value", (i*100/len(segments)))
+            i += 1
             rnd = str(random())
             segmentNames.append("%s/out_%s.ogg" % (directory, rnd))
 
@@ -40,6 +60,8 @@ class Client:
             else:
                 segment.write("%s/out_%s.ogg" % (directory, rnd))
 
+        # update progress bar label and return
+        self.barState.setText("Segmentation completed")
         return segmentNames
 
 def integrateFace(frameNo, frame, faces):
@@ -47,7 +69,7 @@ def integrateFace(frameNo, frame, faces):
   for (f, rects) in faces:
     if f == frameNo:
       for (x, y, width, height) in rects:
-        cv2.rectangle(frame, (x, y), (x + width, y + height), (255, 0, 0), 2)
+        rectangle(frame, (x, y), (x + width, y + height), (255, 0, 0), 2)
   return frame
 
 # If we call this file directly, convert the video and show it onscreen.
@@ -62,12 +84,13 @@ if __name__ == "__main__":
 
     # Show it onscreen
     for i, _ in enumerate(segments):
-        cv2.namedWindow("Video renderer %d" % (i +1))
+        namedWindow("Video renderer %d" % (i +1))
 
     # Loop till ESC pressed
-    while((cv2.waitKey(33) & 0xFF) != 27):
+    while((waitKey(33) & 0xFF) != 27):
         for (i, segment) in enumerate(segments):
             _, img = segment.video.read()
-            cv2.imshow("Video renderer %d" % (i + 1), img)
+            imshow("Video renderer %d" % (i + 1), img)
 
-    cv2.destroyAllWindows()
+    destroyAllWindows()
+

@@ -7,6 +7,9 @@ from VideoWrapper import *
 from Client import *
 from SegmentRegister import *
 from VideoInfo import *
+import time
+from multiprocessing import Process, Queue
+from Segmenter import *
 
 class DesktopClient(QtGui.QMainWindow):
     def __init__(self, parent=None):
@@ -45,9 +48,9 @@ class DesktopClient(QtGui.QMainWindow):
         elif name == "Ben":
             birthday, error = "2211", "Start and end frames out of bounds."
         elif name == "Roxana":
-            bithday, error = "2405", ""
+            birthday, error = "2405b", ""
         elif name == "Agnieszka":
-            birthday, error = "????", ""
+            birthday, error = "2405a", ""
         elif name == "Charlie":
             birthday, error = "2709", ""
 
@@ -139,20 +142,24 @@ class DesktopClient(QtGui.QMainWindow):
         try:
             start = int(self.ui.startFrame.text())
             end = int(self.ui.endFrame.text())
-            cap = Client(str(self.ui.filePath.text()), self.getSplitType(), start, end)
+            cap = Client(str(self.ui.filePath.text()), self.getSplitType(), self.ui.segProgress, self.ui.barState, start, end)
         except IOError:
             return self.errorBox("Jasper")
         except (ValueError, BoundsError):
             return self.errorBox("Ben")
 
-        # TODO : Progress bar
-        segmentNames = cap.run(self.ui.highlightFacesOption.isChecked())
+        # create Segmenter object to segment the video
+        self.seg = Segmenter(self.ui.segProgress, self.ui.barState)
+        
+        # call Client.run, which in turn calls Segmenter.run to perform the segmentation
+        segmentNames = cap.run(self.ui.highlightFacesOption.isChecked(), self.seg) 
 
+        #load segments into the GUI
         self.segments = SegmentRegister(segmentNames)
         self.ui.videoBackground.hide()
         self.setControls(True)
         self.updatePreviousNextButton()
-        self.load(self.segments.current())
+        self.load(self.segments.current()) 
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

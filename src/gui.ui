@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Skyfall Splitter</string>
+   <string>Video Segmentation</string>
   </property>
   <property name="styleSheet">
    <string notr="true">QGroupBox { 
@@ -92,7 +92,7 @@ QGroupBox::title {
       <x>1000</x>
       <y>10</y>
       <width>281</width>
-      <height>331</height>
+      <height>351</height>
      </rect>
     </property>
     <property name="font">
@@ -137,7 +137,7 @@ QGroupBox::title {
       <number>100</number>
      </property>
      <property name="value">
-      <number>50</number>
+      <number>0</number>
      </property>
     </widget>
     <widget class="QRadioButton" name="blackFramesOption">
@@ -282,6 +282,19 @@ QGroupBox::title {
       <bool>false</bool>
      </property>
     </widget>
+    <widget class="QLabel" name="barState">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>330</y>
+       <width>261</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
    </widget>
    <widget class="QPushButton" name="previousButton">
     <property name="enabled">
@@ -372,9 +385,9 @@ QGroupBox::title {
     <property name="geometry">
      <rect>
       <x>1000</x>
-      <y>360</y>
+      <y>380</y>
       <width>281</width>
-      <height>181</height>
+      <height>161</height>
      </rect>
     </property>
     <property name="font">
