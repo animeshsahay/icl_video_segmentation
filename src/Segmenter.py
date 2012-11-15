@@ -1,5 +1,6 @@
 from cv2 import *
 from VideoWrapper import *
+from PyQt4.QtGui import QApplication
 
 class Segmenter:
     def __init__(self, bar, label):
@@ -38,6 +39,7 @@ class Segmenter:
         while self.video.grab() and frameNo <= self.end:
             #update progress bar
             self.progressBar.setProperty("value", (frameNo*100/self.end))
+            QApplication.processEvents()
             
             (_, frame) = self.video.retrieve()
             
