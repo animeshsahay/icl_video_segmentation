@@ -46,18 +46,19 @@ class Client:
         i = 1
         for segment in segments:
             self.progressBar.setProperty("value", (i*100/len(segments)))
+            QtGui.QApplication.processEvents()
             i += 1
             rnd = str(random())
-            segmentNames.append("%s/out_%s.ogg" % (directory, rnd))
+            segmentNames.append("%s/out_%s.avi" % (directory, rnd))
 
             # If we want faces visible, show them
             if highlight:
                 faces = segment.getFaces()
-                segment.write("%s/out_%s.ogg" % (directory, rnd),
+                segment.write("%s/out_%s.avi" % (directory, rnd),
                     frameModifier = lambda frameNo, frame:
                         integrateFace(frameNo, frame, faces))
             else:
-                segment.write("%s/out_%s.ogg" % (directory, rnd))
+                segment.write("%s/out_%s.avi" % (directory, rnd))
 
         # update progress bar label and return
         self.barState.setText("Segmentation completed")

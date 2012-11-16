@@ -48,7 +48,7 @@ class VideoWrapper:
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def write(self, filename, codec = "THEO", frameModifier = lambda frameNo, frame: frame):
+    def write(self, filename, codec = "DIVX", frameModifier = lambda frameNo, frame: frame):
         """
         Writes the segment to file.
 
