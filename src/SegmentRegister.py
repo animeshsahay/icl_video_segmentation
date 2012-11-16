@@ -29,3 +29,11 @@ class SegmentRegister:
 
         self.index -= 1
         return self.segments[self.index]
+
+    def select(self, index):
+        assert(index >= 0 and index < len(self.segments))
+
+        self.index = index
+
+    def currIndex(self):
+        return self.index

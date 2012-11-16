@@ -29,8 +29,7 @@ class Client:
     # Run the correct functions based on what the client wants.
     def run(self, highlight, seg):
         # set arguments in Segmenter and start the segmentation        
-        seg.setArgs(self.videoWrapper.start, self.videoWrapper.end, self.videoWrapper.fps, self.videoWrapper.video, self.splitType)
-        seg.run()
+        seg.run(self.videoWrapper.start, self.videoWrapper.end, self.videoWrapper.fps, self.videoWrapper.video, self.splitType)
 
         # Changing the progress bar label text
         self.barState.setText("Step 2/2: Writing segments to files...")

@@ -22,12 +22,17 @@ class DesktopClient(QtGui.QMainWindow):
 
         QtCore.QObject.connect(self.ui.segmentButton, QtCore.SIGNAL("clicked()"), self.segment)
         QtCore.QObject.connect(self.ui.browseButton, QtCore.SIGNAL("clicked()"), self.browse)
-        QtCore.QObject.connect(self.ui.playButton, QtCore.SIGNAL("clicked()"), self.ui.videoPlayer.play)
+        QtCore.QObject.connect(self.ui.playButton, QtCore.SIGNAL("clicked()"), self.play)
         QtCore.QObject.connect(self.ui.pauseButton, QtCore.SIGNAL("clicked()"), self.ui.videoPlayer.pause)
         QtCore.QObject.connect(self.ui.nextButton, QtCore.SIGNAL("clicked()"), self.next)
         QtCore.QObject.connect(self.ui.previousButton, QtCore.SIGNAL("clicked()"), self.previous)
         QtCore.QObject.connect(self.ui.filePath, QtCore.SIGNAL("returnPressed()"), self.preload)
         QtCore.QObject.connect(self.ui.lastFrameButton, QtCore.SIGNAL("clicked()"), self.setLastFrame)
+        QtCore.QObject.connect(self.ui.newButton, QtCore.SIGNAL("clicked()"), self.showOptionsScreen)
+        QtCore.QObject.connect(self.ui.playNextButton, QtCore.SIGNAL("clicked()"), self.playNext)
+        self.ui.segmentList.doubleClicked.connect(self.selectSegment)
+
+        self.showOptionsScreen()
 
     def setLastFrame(self):
         """ Set the end frame to be the last frame of the video. """
@@ -39,6 +44,18 @@ class DesktopClient(QtGui.QMainWindow):
         self.ui.filePath.setText(file)
 
         self.preload()
+
+    def switchView(self):
+        self.ui.stackedWidget.setCurrentIndex(1)
+        #self.resize(self.ui.verticalLayout.sizeHint())
+    
+    def selectSegment(self):
+        index = self.ui.segmentList.selectedIndexes()[0].row()
+
+        self.segments.select(index)
+        self.load(self.segments.current())
+
+        print "a segment was selected. charlie is happy. index: " + str(index)
 
     def errorBox(self, name):
         """ Customized error box. """
@@ -85,17 +102,26 @@ class DesktopClient(QtGui.QMainWindow):
     def next(self):
         """ Grabs next segment, loads it, and updates GUI accordingly. """
         self.load(self.segments.next())
-        self.updateSegLabel()
         self.updatePreviousNextButton()
+        self.selectListEntry()
 
     def previous(self):
         """ Grabs previous segment, loads it, and updates GUI accordingly. """
         self.load(self.segments.previous())
-        self.updateSegLabel()
         self.updatePreviousNextButton()
+        self.selectListEntry()
 
-    def updateSegLabel(self):
-        self.ui.currSeg.setText("Current segment: " + str(self.segments.index+1) + "/" + str(self.segments.length()))
+    def play(self):
+        time.sleep(1)
+        self.ui.videoPlayer.play()
+
+    def playNext(self):
+        self.next()
+        self.play()
+
+    def selectListEntry(self):
+        index = self.ui.segmentList.model().index(self.segments.currIndex(), 0, QtCore.QModelIndex())
+        self.ui.segmentList.selectionModel().select(index, self.ui.segmentList.selectionModel().ClearAndSelect)
 
     def updatePreviousNextButton(self):
         """
@@ -104,6 +130,7 @@ class DesktopClient(QtGui.QMainWindow):
         """
         self.ui.previousButton.setDisabled(self.segments.first())
         self.ui.nextButton.setDisabled(self.segments.last())
+        self.ui.playNextButton.setDisabled(self.segments.last())
 
     def setControls(self, enabled):
         """ Global GUI button toggle. """
@@ -112,11 +139,7 @@ class DesktopClient(QtGui.QMainWindow):
         self.ui.nextButton.setEnabled(enabled)
         self.ui.previousButton.setEnabled(enabled)
         self.ui.lastFrameButton.setEnabled(enabled)
-
-        if enabled:
-            self.updateSegLabel()
-        else:
-            self.ui.currSeg.setText("Video not yet segmented.")
+        self.ui.playNextButton.setEnabled(enabled)
 
     # TODO : Define a split type for when nothing is ticked
     def getSplitType(self):
@@ -154,12 +177,35 @@ class DesktopClient(QtGui.QMainWindow):
         # call Client.run, which in turn calls Segmenter.run to perform the segmentation
         segmentNames = cap.run(self.ui.highlightFacesOption.isChecked(), self.seg) 
 
+        self.fillList(segmentNames)
+
         #load segments into the GUI
         self.segments = SegmentRegister(segmentNames)
-        self.ui.videoBackground.hide()
+        #self.ui.videoBackground.hide()
         self.setControls(True)
         self.updatePreviousNextButton()
         self.load(self.segments.current()) 
+        self.showVideoScreen()
+        self.selectListEntry()
+
+    def fillList(self, segments):
+        model = QtGui.QStandardItemModel()
+        #model.insertColumn
+
+        for i, s in enumerate(segments):
+            item = QtGui.QStandardItem('Segment #{0} - {1}'.format(i, s))
+            item.setEditable(False)
+            model.appendRow(item)
+
+        self.ui.segmentList.setModel(model)
+
+    def showVideoScreen(self):
+        self.ui.stackedWidget.setCurrentIndex(1)
+        self.resize(1200, 500)
+
+    def showOptionsScreen(self):
+        self.ui.stackedWidget.setCurrentIndex(0)
+        self.resize(550, 434)
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
