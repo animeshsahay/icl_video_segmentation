@@ -49,7 +49,7 @@ class Client:
             QtGui.QApplication.processEvents()
             i += 1
             rnd = str(random())
-            segmentNames.append("%s/out_%s.avi" % (directory, rnd))
+            segmentNames.append(("%s/out_%s.avi" % (directory, rnd), segment.start, segment.end))
 
             # If we want faces visible, show them
             if highlight:

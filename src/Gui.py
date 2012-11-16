@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui.ui'
 #
-# Created: Fri Nov 16 16:46:14 2012
+# Created: Fri Nov 16 18:41:40 2012
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -75,6 +75,9 @@ class Ui_MainWindow(object):
         self.browseButton.setDefault(False)
         self.browseButton.setObjectName(_fromUtf8("browseButton"))
         self.filePathLayout.addWidget(self.browseButton)
+        self.loadButton = QtGui.QPushButton(self.optionsPage)
+        self.loadButton.setObjectName(_fromUtf8("loadButton"))
+        self.filePathLayout.addWidget(self.loadButton)
         self.optionsLayout.addLayout(self.filePathLayout)
         self.parametersLayout = QtGui.QHBoxLayout()
         self.parametersLayout.setObjectName(_fromUtf8("parametersLayout"))
@@ -92,7 +95,7 @@ class Ui_MainWindow(object):
         self.gridLayout_5.setContentsMargins(-1, 20, -1, -1)
         self.gridLayout_5.setObjectName(_fromUtf8("gridLayout_5"))
         self.segmentButton = QtGui.QPushButton(self.groupBox)
-        self.segmentButton.setEnabled(True)
+        self.segmentButton.setEnabled(False)
         self.segmentButton.setObjectName(_fromUtf8("segmentButton"))
         self.gridLayout_5.addWidget(self.segmentButton, 9, 0, 1, 1)
         self.segProgress = QtGui.QProgressBar(self.groupBox)
@@ -177,6 +180,7 @@ class Ui_MainWindow(object):
         self.newButton.setObjectName(_fromUtf8("newButton"))
         self.menuLayout.addWidget(self.newButton)
         self.saveButton = QtGui.QPushButton(self.videoPage)
+        self.saveButton.setEnabled(True)
         self.saveButton.setObjectName(_fromUtf8("saveButton"))
         self.menuLayout.addWidget(self.saveButton)
         self.videoLayout.addLayout(self.menuLayout)
@@ -246,12 +250,28 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         self.stackedWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        MainWindow.setTabOrder(self.blackFramesOption, self.everySecondOption)
+        MainWindow.setTabOrder(self.everySecondOption, self.everyTwoSecondsOption)
+        MainWindow.setTabOrder(self.everyTwoSecondsOption, self.startFrame)
+        MainWindow.setTabOrder(self.startFrame, self.endFrame)
+        MainWindow.setTabOrder(self.endFrame, self.lastFrameButton)
+        MainWindow.setTabOrder(self.lastFrameButton, self.highlightFacesOption)
+        MainWindow.setTabOrder(self.highlightFacesOption, self.segmentButton)
+        MainWindow.setTabOrder(self.segmentButton, self.segmentList)
+        MainWindow.setTabOrder(self.segmentList, self.previousButton)
+        MainWindow.setTabOrder(self.previousButton, self.playButton)
+        MainWindow.setTabOrder(self.playButton, self.playNextButton)
+        MainWindow.setTabOrder(self.playNextButton, self.pauseButton)
+        MainWindow.setTabOrder(self.pauseButton, self.nextButton)
+        MainWindow.setTabOrder(self.nextButton, self.newButton)
+        MainWindow.setTabOrder(self.newButton, self.saveButton)
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Video Segmentation", None, QtGui.QApplication.UnicodeUTF8))
-        self.filePath.setText(QtGui.QApplication.translate("MainWindow", "/homes/jp2310/Documents/3rd year/Project/icl_video_segmentation/res/skyfall.mp4", None, QtGui.QApplication.UnicodeUTF8))
+        self.filePath.setText(QtGui.QApplication.translate("MainWindow", "/homes/cpp10/icl_video_segmentation/res/skyfall.mp4", None, QtGui.QApplication.UnicodeUTF8))
         self.filePath.setPlaceholderText(QtGui.QApplication.translate("MainWindow", "Please load a video file.", None, QtGui.QApplication.UnicodeUTF8))
         self.browseButton.setText(QtGui.QApplication.translate("MainWindow", "Browse", None, QtGui.QApplication.UnicodeUTF8))
+        self.loadButton.setText(QtGui.QApplication.translate("MainWindow", "Load", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox.setTitle(QtGui.QApplication.translate("MainWindow", "Options", None, QtGui.QApplication.UnicodeUTF8))
         self.segmentButton.setText(QtGui.QApplication.translate("MainWindow", "Segment", None, QtGui.QApplication.UnicodeUTF8))
         self.everySecondOption.setText(QtGui.QApplication.translate("MainWindow", "Every second", None, QtGui.QApplication.UnicodeUTF8))

@@ -1,3 +1,8 @@
+import os
+import os.path
+import shutil
+import csv
+
 class SegmentRegister:
     def __init__(self, segments):
         self.segments = segments
@@ -16,19 +21,19 @@ class SegmentRegister:
         return len(self.segments)
 
     def current(self):
-        return self.segments[self.index]
+        return self.segments[self.index][0]
 
     def next(self):
         assert(not self.last())
 
         self.index += 1
-        return self.segments[self.index]
+        return self.current()
 
     def previous(self):
         assert(not self.first())
 
         self.index -= 1
-        return self.segments[self.index]
+        return self.current()
 
     def select(self, index):
         assert(index >= 0 and index < len(self.segments))
@@ -37,3 +42,13 @@ class SegmentRegister:
 
     def currIndex(self):
         return self.index
+
+    def save(self, fileName):
+        os.mkdir(fileName)
+        with open(os.path.join(fileName, "segments.csv"), 'wb') as raw:
+            f = csv.writer(raw)
+            for (name, s, e) in self.segments:
+                f.writerow([s, e, os.path.split(name)[1]])
+                shutil.copy(name, fileName)
+    
+            raw.close()

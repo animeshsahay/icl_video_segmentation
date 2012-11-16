@@ -10,6 +10,8 @@ from VideoInfo import *
 import time
 from multiprocessing import Process, Queue
 from Segmenter import *
+import csv
+import os.path
 
 class DesktopClient(QtGui.QMainWindow):
     def __init__(self, parent=None):
@@ -22,17 +24,19 @@ class DesktopClient(QtGui.QMainWindow):
 
         QtCore.QObject.connect(self.ui.segmentButton, QtCore.SIGNAL("clicked()"), self.segment)
         QtCore.QObject.connect(self.ui.browseButton, QtCore.SIGNAL("clicked()"), self.browse)
+        QtCore.QObject.connect(self.ui.loadButton, QtCore.SIGNAL("clicked()"), self.loadCSV)
+        QtCore.QObject.connect(self.ui.saveButton, QtCore.SIGNAL("clicked()"), self.save)
         QtCore.QObject.connect(self.ui.playButton, QtCore.SIGNAL("clicked()"), self.play)
         QtCore.QObject.connect(self.ui.pauseButton, QtCore.SIGNAL("clicked()"), self.ui.videoPlayer.pause)
         QtCore.QObject.connect(self.ui.nextButton, QtCore.SIGNAL("clicked()"), self.next)
         QtCore.QObject.connect(self.ui.previousButton, QtCore.SIGNAL("clicked()"), self.previous)
         QtCore.QObject.connect(self.ui.filePath, QtCore.SIGNAL("returnPressed()"), self.preload)
         QtCore.QObject.connect(self.ui.lastFrameButton, QtCore.SIGNAL("clicked()"), self.setLastFrame)
-        QtCore.QObject.connect(self.ui.newButton, QtCore.SIGNAL("clicked()"), self.showOptionsScreen)
+        QtCore.QObject.connect(self.ui.newButton, QtCore.SIGNAL("clicked()"), self.reset)
         QtCore.QObject.connect(self.ui.playNextButton, QtCore.SIGNAL("clicked()"), self.playNext)
         self.ui.segmentList.doubleClicked.connect(self.selectSegment)
 
-        self.showOptionsScreen()
+        self.reset()
 
     def setLastFrame(self):
         """ Set the end frame to be the last frame of the video. """
@@ -45,6 +49,34 @@ class DesktopClient(QtGui.QMainWindow):
 
         self.preload()
 
+    def save(self):
+        file = str(QtGui.QFileDialog.getSaveFileName(self, "Save Project File"))
+
+        self.segments.save(file)
+
+    def loadCSV(self):
+        # TODO : restrict to CSV files
+        file = str(QtGui.QFileDialog.getOpenFileName(self, "Open Segments File"))
+
+        segmentNames = []
+        with open(file, 'rb') as raw:
+            f = csv.reader(raw)
+            for [s, e, name] in f:
+                segmentNames.append((os.path.join(os.path.dirname(file), name), s, e))
+            raw.close()
+
+        self.fillList(segmentNames)
+
+        #load segments into the GUI, ignoring start and end frames
+        self.segments = SegmentRegister(segmentNames)
+        #self.ui.videoBackground.hide()
+        self.setControls(True)
+        self.updatePreviousNextButton()
+        self.load(self.segments.current()) 
+        self.showVideoScreen()
+        self.selectListEntry()
+
+
     def switchView(self):
         self.ui.stackedWidget.setCurrentIndex(1)
         #self.resize(self.ui.verticalLayout.sizeHint())
@@ -54,8 +86,6 @@ class DesktopClient(QtGui.QMainWindow):
 
         self.segments.select(index)
         self.load(self.segments.current())
-
-        print "a segment was selected. charlie is happy. index: " + str(index)
 
     def errorBox(self, name):
         """ Customized error box. """
@@ -88,6 +118,7 @@ class DesktopClient(QtGui.QMainWindow):
         self.ui.endFrame.setText("")
         self.ui.videoTitleLabel.setText("Title: " + self.basicInfo.prettyTitle())
         self.ui.videoLengthLabel.setText("Video length: " + self.basicInfo.prettyLength())
+        self.ui.segmentButton.setEnabled(True)
         self.ui.lastFrameButton.setEnabled(True)
 
     def load(self, segment):
@@ -112,7 +143,6 @@ class DesktopClient(QtGui.QMainWindow):
         self.selectListEntry()
 
     def play(self):
-        time.sleep(1)
         self.ui.videoPlayer.play()
 
     def playNext(self):
@@ -153,6 +183,22 @@ class DesktopClient(QtGui.QMainWindow):
 
         return None
 
+    def reset(self):
+        self.setControls(False)
+        self.ui.videoTitleLabel.setText("Title:")
+        self.ui.videoLengthLabel.setText("Video length:")
+        self.ui.filePath.setText("")
+        self.ui.segmentButton.setEnabled(False)
+        self.ui.lastFrameButton.setEnabled(False)
+        self.ui.highlightFacesOption.setCheckState(False)
+        self.ui.everyTwoSecondsOption.click()
+        self.ui.startFrame.setText("0")
+        self.ui.endFrame.setText("")
+        self.ui.segProgress.setProperty("value", 0)
+        self.ui.barState.setText("")
+
+        self.showOptionsScreen()
+
     def segment(self):
         """
         Calls the Client class to perform segmenting. Handles bound checking
@@ -179,7 +225,7 @@ class DesktopClient(QtGui.QMainWindow):
 
         self.fillList(segmentNames)
 
-        #load segments into the GUI
+        #load segments into the GUI, ignoring start and end frames
         self.segments = SegmentRegister(segmentNames)
         #self.ui.videoBackground.hide()
         self.setControls(True)
@@ -192,8 +238,8 @@ class DesktopClient(QtGui.QMainWindow):
         model = QtGui.QStandardItemModel()
         #model.insertColumn
 
-        for i, s in enumerate(segments):
-            item = QtGui.QStandardItem('Segment #{0} - {1}'.format(i, s))
+        for i, (_, start, end) in enumerate(segments):
+            item = QtGui.QStandardItem('{0} - frames {1} to {2}'.format(i+1, start, end))
             item.setEditable(False)
             model.appendRow(item)
 
