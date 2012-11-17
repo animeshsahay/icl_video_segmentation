@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>581</width>
-    <height>440</height>
+    <width>984</width>
+    <height>641</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -143,34 +143,24 @@ QGroupBox::title {
                <property name="topMargin">
                 <number>20</number>
                </property>
-               <item row="9" column="0">
-                <widget class="QPushButton" name="segmentButton">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="text">
-                  <string>Segment</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="10" column="0" colspan="2">
-                <widget class="QProgressBar" name="segProgress">
-                 <property name="maximum">
-                  <number>100</number>
-                 </property>
-                 <property name="value">
-                  <number>0</number>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="0" colspan="2">
+               <item row="6" column="0">
                 <widget class="QRadioButton" name="everySecondOption">
                  <property name="text">
                   <string>Every second</string>
                  </property>
                 </widget>
                </item>
-               <item row="5" column="0">
+               <item row="7" column="0">
+                <widget class="QRadioButton" name="everyTwoSecondsOption">
+                 <property name="text">
+                  <string>Every two seconds</string>
+                 </property>
+                 <property name="checked">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="10" column="0">
                 <widget class="QLineEdit" name="startFrame">
                  <property name="cursor">
                   <cursorShape>IBeamCursor</cursorShape>
@@ -180,7 +170,41 @@ QGroupBox::title {
                  </property>
                 </widget>
                </item>
-               <item row="7" column="1">
+               <item row="15" column="0" colspan="2">
+                <widget class="QProgressBar" name="segProgress">
+                 <property name="maximum">
+                  <number>100</number>
+                 </property>
+                 <property name="value">
+                  <number>0</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="14" column="0">
+                <widget class="QPushButton" name="segmentButton">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="text">
+                  <string>Segment</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="16" column="0" colspan="2">
+                <widget class="QLabel" name="barState">
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item row="13" column="0" colspan="2">
+                <widget class="QCheckBox" name="highlightFacesOption">
+                 <property name="text">
+                  <string>Highlight faces</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="12" column="1">
                 <widget class="QPushButton" name="lastFrameButton">
                  <property name="enabled">
                   <bool>false</bool>
@@ -193,41 +217,10 @@ QGroupBox::title {
                  </property>
                 </widget>
                </item>
-               <item row="8" column="0" colspan="2">
-                <widget class="QCheckBox" name="highlightFacesOption">
-                 <property name="text">
-                  <string>Highlight faces</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="11" column="0" colspan="2">
-                <widget class="QLabel" name="barState">
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="0" colspan="2">
-                <widget class="QRadioButton" name="everyTwoSecondsOption">
-                 <property name="text">
-                  <string>Every two seconds</string>
-                 </property>
-                 <property name="checked">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="0">
+               <item row="9" column="0">
                 <widget class="QLabel" name="label_2">
                  <property name="text">
                   <string>Start frame : </string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label">
-                 <property name="text">
-                  <string>Split type</string>
                  </property>
                 </widget>
                </item>
@@ -238,21 +231,28 @@ QGroupBox::title {
                  </property>
                 </widget>
                </item>
-               <item row="6" column="0">
+               <item row="0" column="0">
+                <widget class="QLabel" name="label">
+                 <property name="text">
+                  <string>Split type</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="11" column="0">
                 <widget class="QLabel" name="label_3">
                  <property name="text">
                   <string>End frame : </string>
                  </property>
                 </widget>
                </item>
-               <item row="7" column="0">
+               <item row="12" column="0">
                 <widget class="QLineEdit" name="endFrame">
                  <property name="text">
                   <string/>
                  </property>
                 </widget>
                </item>
-               <item row="12" column="0" colspan="2">
+               <item row="17" column="0" colspan="2">
                 <spacer name="verticalSpacer_3">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
@@ -264,6 +264,16 @@ QGroupBox::title {
                   </size>
                  </property>
                 </spacer>
+               </item>
+               <item row="8" column="0">
+                <widget class="QRadioButton" name="onFaceClustersOption">
+                 <property name="text">
+                  <string>On face clusters</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
                </item>
               </layout>
              </widget>
@@ -399,7 +409,7 @@ QGroupBox::title {
               </property>
               <layout class="QGridLayout" name="gridLayout_4">
                <item row="0" column="0">
-                <widget class="Phonon::VideoPlayer" name="videoPlayer" native="true">
+                <widget class="Phonon::VideoPlayer" name="videoPlayer">
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
@@ -511,8 +521,6 @@ QGroupBox::title {
  </customwidgets>
  <tabstops>
   <tabstop>blackFramesOption</tabstop>
-  <tabstop>everySecondOption</tabstop>
-  <tabstop>everyTwoSecondsOption</tabstop>
   <tabstop>startFrame</tabstop>
   <tabstop>endFrame</tabstop>
   <tabstop>lastFrameButton</tabstop>

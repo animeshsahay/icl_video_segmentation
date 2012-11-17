@@ -178,6 +178,8 @@ class DesktopClient(QtGui.QMainWindow):
             return SplitType.EVERY_SECOND
         if self.ui.everyTwoSecondsOption.isChecked():
             return SplitType.EVERY_TWO_SECONDS
+        if self.ui.onFaceClustersOption.isChecked():
+            return SplitType.ON_FACE_CLUSTERS
 
         return None
 

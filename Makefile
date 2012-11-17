@@ -19,6 +19,9 @@ dist:
 test:
 	python -m unittest discover -p '*Test.py'
 
+gui:
+	pyuic4 segmenter/gui.ui -o segmenter/Gui.py
+
 # Test targets
 cluster:
 	python "$(TOP)/segmenter/FaceClustering.py" res/skyfall.mp4

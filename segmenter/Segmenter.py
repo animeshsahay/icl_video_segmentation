@@ -79,4 +79,5 @@ class SplitType:
     ON_BLACK_FRAMES = 0
     EVERY_SECOND = 1
     EVERY_TWO_SECONDS = 2
+    ON_FACE_CLUSTERS = 3
     # on faces...
