@@ -28,7 +28,6 @@ class VideoWrapper:
         i.e. end is inclusive.
         """
         if not video.isOpened():
-            print "Hello"
             raise IOError
 
         self.video = video

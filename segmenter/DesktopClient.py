@@ -1,5 +1,3 @@
-#!/usr/bin/python -d
-import sys
 from PyQt4 import phonon
 from PyQt4 import QtCore, QtGui
 from Gui import Ui_MainWindow
@@ -253,8 +251,3 @@ class DesktopClient(QtGui.QMainWindow):
         self.ui.stackedWidget.setCurrentIndex(0)
         self.resize(581, 440)
 
-if __name__ == "__main__":
-    app = QtGui.QApplication(sys.argv)
-    client = DesktopClient()
-    client.show()
-    sys.exit(app.exec_())

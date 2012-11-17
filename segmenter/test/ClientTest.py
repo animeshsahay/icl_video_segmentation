@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import unittest
-from Client import *
+from segmenter.Client import *
 
 class ClientTest(unittest.TestCase):
   def test_noVideo(self):

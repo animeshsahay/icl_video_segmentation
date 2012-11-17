@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import unittest
 import sys
-from VideoWrapper import *
+from segmenter.VideoWrapper import *
 
 # Note : Skyfall trailer has 3672 frames.
 class VideoWrapperTest(unittest.TestCase):

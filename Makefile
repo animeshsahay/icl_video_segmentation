@@ -1,6 +1,8 @@
 ARGS ?=
 TOP = $(shell pwd)
-export PYTHONPATH := $(TOP)/enzyme:$(TOP)/src:$(TOP)/tests:$(PYTHONPATH)
+export PYTHONPATH := $(TOP)/enzyme:$(TOP)::$(PYTHONPATH)
+
+.PHONY: dist test desktop shell cluster client
 
 shell:
 	rm -f .pystart
@@ -8,13 +10,19 @@ shell:
 	PYTHONSTARTUP="./.pystart" python 
 	rm -f .pystart
 
-cluster:
-	python src/FaceClustering.py res/skyfall.mp4
-
-client:
-	python "$(TOP)/src/Client.py" ${ARGS}
 desktop:
-	python "$(TOP)/src/DesktopClient.py" ${ARGS}
+	$(TOP)/bin/videoSegmenter ${ARGS}
+
+dist:
+	python $(TOP)/setup.py sdist
 
 test:
-	python -m unittest discover -s 'tests/' -p '*Test.py'
+	python -m unittest discover -p '*Test.py'
+
+# Test targets
+cluster:
+	python "$(TOP)/segmenter/FaceClustering.py" res/skyfall.mp4
+
+client:
+	python "$(TOP)/segmenter/Client.py" ${ARGS}
+
