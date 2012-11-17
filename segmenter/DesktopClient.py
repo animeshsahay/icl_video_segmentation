@@ -141,6 +141,8 @@ class DesktopClient(QtGui.QMainWindow):
         self.selectListEntry()
 
     def play(self):
+        # Dirty hack to fix "Play" button random behavior
+        self.load(self.segments.current())
         self.ui.videoPlayer.play()
 
     def playNext(self):
