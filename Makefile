@@ -1,6 +1,6 @@
 ARGS ?=
 TOP = $(shell pwd)
-export PYTHONPATH := $(TOP)/enzyme:$(TOP)/webpy:$(TOP)/jinja2:$(TOP)/src:$(TOP)/tests:$(PYTHONPATH)
+export PYTHONPATH := $(TOP)/enzyme:$(TOP)/src:$(TOP)/tests:$(PYTHONPATH)
 
 shell:
 	rm -f .pystart
@@ -10,8 +10,6 @@ shell:
 
 cluster:
 	python src/FaceClustering.py res/skyfall.mp4
-web:
-	python "$(TOP)/src/WebServer.py" ${ARGS}
 
 client:
 	python "$(TOP)/src/Client.py" ${ARGS}

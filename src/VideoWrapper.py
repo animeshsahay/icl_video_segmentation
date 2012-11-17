@@ -67,7 +67,7 @@ class VideoWrapper:
             writer.write(frame)
 
     def getFaces(self):
-        cascadefile = "haarcascade_frontalface_default.xml"
+        cascadefile = "res/haarcascade_frontalface_default.xml"
         cascade = CascadeClassifier(cascadefile)
 
         faces = []
