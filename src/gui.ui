@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>994</width>
-    <height>595</height>
+    <width>581</width>
+    <height>440</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -80,7 +80,7 @@ QGroupBox::title {
                <string/>
               </property>
               <property name="text">
-               <string>/homes/cpp10/icl_video_segmentation/res/skyfall.mp4</string>
+               <string/>
               </property>
               <property name="readOnly">
                <bool>false</bool>
@@ -176,7 +176,7 @@ QGroupBox::title {
                   <cursorShape>IBeamCursor</cursorShape>
                  </property>
                  <property name="text">
-                  <string>200</string>
+                  <string>0</string>
                  </property>
                 </widget>
                </item>
@@ -248,7 +248,7 @@ QGroupBox::title {
                <item row="7" column="0">
                 <widget class="QLineEdit" name="endFrame">
                  <property name="text">
-                  <string>400</string>
+                  <string/>
                  </property>
                 </widget>
                </item>

@@ -251,7 +251,7 @@ class DesktopClient(QtGui.QMainWindow):
 
     def showOptionsScreen(self):
         self.ui.stackedWidget.setCurrentIndex(0)
-        self.resize(550, 434)
+        self.resize(581, 440)
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

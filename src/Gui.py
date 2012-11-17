@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui.ui'
 #
-# Created: Fri Nov 16 18:41:40 2012
+# Created: Sat Nov 17 15:13:14 2012
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -68,6 +68,7 @@ class Ui_MainWindow(object):
         self.filePath.setToolTip(_fromUtf8(""))
         self.filePath.setStatusTip(_fromUtf8(""))
         self.filePath.setWhatsThis(_fromUtf8(""))
+        self.filePath.setText(_fromUtf8(""))
         self.filePath.setReadOnly(False)
         self.filePath.setObjectName(_fromUtf8("filePath"))
         self.filePathLayout.addWidget(self.filePath)
@@ -139,6 +140,7 @@ class Ui_MainWindow(object):
         self.label_3.setObjectName(_fromUtf8("label_3"))
         self.gridLayout_5.addWidget(self.label_3, 6, 0, 1, 1)
         self.endFrame = QtGui.QLineEdit(self.groupBox)
+        self.endFrame.setText(_fromUtf8(""))
         self.endFrame.setObjectName(_fromUtf8("endFrame"))
         self.gridLayout_5.addWidget(self.endFrame, 7, 0, 1, 1)
         spacerItem1 = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
@@ -268,14 +270,13 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Video Segmentation", None, QtGui.QApplication.UnicodeUTF8))
-        self.filePath.setText(QtGui.QApplication.translate("MainWindow", "/homes/cpp10/icl_video_segmentation/res/skyfall.mp4", None, QtGui.QApplication.UnicodeUTF8))
         self.filePath.setPlaceholderText(QtGui.QApplication.translate("MainWindow", "Please load a video file.", None, QtGui.QApplication.UnicodeUTF8))
         self.browseButton.setText(QtGui.QApplication.translate("MainWindow", "Browse", None, QtGui.QApplication.UnicodeUTF8))
         self.loadButton.setText(QtGui.QApplication.translate("MainWindow", "Load", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox.setTitle(QtGui.QApplication.translate("MainWindow", "Options", None, QtGui.QApplication.UnicodeUTF8))
         self.segmentButton.setText(QtGui.QApplication.translate("MainWindow", "Segment", None, QtGui.QApplication.UnicodeUTF8))
         self.everySecondOption.setText(QtGui.QApplication.translate("MainWindow", "Every second", None, QtGui.QApplication.UnicodeUTF8))
-        self.startFrame.setText(QtGui.QApplication.translate("MainWindow", "200", None, QtGui.QApplication.UnicodeUTF8))
+        self.startFrame.setText(QtGui.QApplication.translate("MainWindow", "0", None, QtGui.QApplication.UnicodeUTF8))
         self.lastFrameButton.setText(QtGui.QApplication.translate("MainWindow", "Last frame", None, QtGui.QApplication.UnicodeUTF8))
         self.highlightFacesOption.setText(QtGui.QApplication.translate("MainWindow", "Highlight faces", None, QtGui.QApplication.UnicodeUTF8))
         self.everyTwoSecondsOption.setText(QtGui.QApplication.translate("MainWindow", "Every two seconds", None, QtGui.QApplication.UnicodeUTF8))
@@ -283,7 +284,6 @@ class Ui_MainWindow(object):
         self.label.setText(QtGui.QApplication.translate("MainWindow", "Split type", None, QtGui.QApplication.UnicodeUTF8))
         self.blackFramesOption.setText(QtGui.QApplication.translate("MainWindow", "On black frames", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("MainWindow", "End frame : ", None, QtGui.QApplication.UnicodeUTF8))
-        self.endFrame.setText(QtGui.QApplication.translate("MainWindow", "400", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_2.setTitle(QtGui.QApplication.translate("MainWindow", "Info", None, QtGui.QApplication.UnicodeUTF8))
         self.videoTitleLabel.setText(QtGui.QApplication.translate("MainWindow", "Title:", None, QtGui.QApplication.UnicodeUTF8))
         self.videoLengthLabel.setText(QtGui.QApplication.translate("MainWindow", "Video length: ", None, QtGui.QApplication.UnicodeUTF8))
