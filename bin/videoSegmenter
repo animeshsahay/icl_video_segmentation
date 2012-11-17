@@ -1,0 +1,11 @@
+#!/usr/bin/python -d
+from segmenter.DesktopClient import DesktopClient
+import sys
+from PyQt4 import QtGui
+
+if __name__ == "__main__":
+    app = QtGui.QApplication(sys.argv)
+    client = DesktopClient()
+    client.show()
+    sys.exit(app.exec_())
+
