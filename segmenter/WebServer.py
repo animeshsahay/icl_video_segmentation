@@ -4,7 +4,7 @@ import tempfile
 import os
 import cv2
 from random import random
-from Segmenter import Segmenter
+from Segmenter import Segmenter, SplitType
 from Client import Client, directory
 from web.contrib.template import render_jinja
 
@@ -22,7 +22,7 @@ render = render_jinja("segmenter/assets", encoding = "utf-8")
 class Index:
   # On GET, we just display the jinja page
   def GET(self):
-    return render.index(SplitType = Segmenter.SplitType)
+    return render.index(SplitType = SplitType)
 
   # On POST, we create a client
   def POST(self):
