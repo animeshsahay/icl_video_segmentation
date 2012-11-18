@@ -2,10 +2,7 @@
 import os
 import sys
 import time
-from PyQt4 import QtCore
-from PyQt4 import QtGui
 from cv2 import *
-#import DesktopClient
 
 class BoundsError(Exception):
     def __init__(self):
@@ -47,7 +44,7 @@ class VideoWrapper:
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def write(self, filename, codec = "DIVX", frameModifier = lambda frameNo, frame: frame):
+    def write(self, filename, codec, frameModifier = lambda frameNo, frame: frame):
         """
         Writes the segment to file.
 

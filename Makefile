@@ -1,6 +1,6 @@
 ARGS ?=
 TOP = $(shell pwd)
-export PYTHONPATH := $(TOP)/enzyme:$(TOP)::$(PYTHONPATH)
+export PYTHONPATH := $(TOP)/enzyme:$(TOP):$(TOP)/webpy:$(TOP)/jinja2:$(PYTHONPATH)
 
 .PHONY: dist test desktop shell cluster client
 
@@ -21,6 +21,9 @@ test:
 
 gui:
 	pyuic4 segmenter/gui.ui -o segmenter/Gui.py
+
+web:
+	python "$(TOP)/segmenter/WebServer.py" ${ARGS}
 
 # Test targets
 cluster:

@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <title>File upload service</title>
+    <link rel="stylesheet" type="text/css" href="static/main.css" />
+  </head>
+  <body>
+    <div class="Menu MenuShow FadeIn">
+      <div class="MenuOutline"></div>
+      <div class="MenuContent AlignCentre">
+        <form method="POST" enctype="multipart/form-data" action="">
+          <input type="file" name="video" />
+          <br />
+          Start frame: <input type="text" name="start" />
+          <br />
+          End frame: <input type="text" name="end" />
+          <br />
+          <select name="type">
+            {% for (key, val) in SplitType.__dict__.items() if not key.startswith("__") %}
+            <option value="{{ val }}">{{ key.replace("_", " ").capitalize() }}</option>
+            {% endfor %}
+          </select>
+	  <br />
+	  <input type="checkbox" name="faces" />Show detected faces
+          <br />
+          <input type="submit" />
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

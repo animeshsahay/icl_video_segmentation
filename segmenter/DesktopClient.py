@@ -201,6 +201,14 @@ class DesktopClient(QtGui.QMainWindow):
 
         self.showOptionsScreen()
 
+    def setProgress(self, x):
+        self.ui.segProgress.setProperty("value", x),
+        QtGui.QApplication.processEvents()
+
+    def setState(self, x):
+        self.ui.barState.setText(x)
+        QtGui.QApplication.processEvents()
+
     def segment(self):
         """
         Calls the Client class to perform segmenting. Handles bound checking
@@ -213,17 +221,21 @@ class DesktopClient(QtGui.QMainWindow):
         try:
             start = int(self.ui.startFrame.text())
             end = int(self.ui.endFrame.text())
-            cap = Client(str(self.ui.filePath.text()), self.getSplitType(), self.ui.segProgress, self.ui.barState, start, end)
+            cap = Client(str(self.ui.filePath.text()), self.getSplitType(),
+                         lambda x: self.setProgress(x),
+                         lambda x: self.setState(x),
+                         start, end)
         except IOError:
             return self.errorBox("Jasper")
         except (ValueError, BoundsError):
             return self.errorBox("Ben")
 
         # create Segmenter object to segment the video
-        self.seg = Segmenter(self.ui.segProgress, self.ui.barState)
+        self.seg = Segmenter(lambda x: self.setProgress(x),
+                             lambda x: self.setState(x))
         
         # call Client.run, which in turn calls Segmenter.run to perform the segmentation
-        segmentNames = cap.run(self.ui.highlightFacesOption.isChecked(), self.seg) 
+        segmentNames = cap.run(self.seg, self.ui.highlightFacesOption.isChecked(), "DIVX", "avi", True)
 
         self.fillList(segmentNames)
 

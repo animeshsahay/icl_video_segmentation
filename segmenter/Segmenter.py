@@ -1,12 +1,11 @@
 from cv2 import *
 from VideoWrapper import *
-from PyQt4.QtGui import QApplication
 
 class Segmenter:
-    def __init__(self, bar, label):
-        self.segments = []
-        self.progressBar = bar
-        self.barState = label
+    def __init__(self, progressCallback = lambda percent: None, stateCallback = lambda text: None):
+        self.segments         = []
+        self.progressCallback = progressCallback
+        self.stateCallback    = stateCallback
 
     def run(self, start, end, fps, video, splitType):
         """
@@ -15,7 +14,7 @@ class Segmenter:
         """
 
         # Set progress bar label
-        self.barState.setText("Step 1/2: Finding segments...")
+        self.stateCallback("Step 1/2: Finding segments...")
 
         frameNo = start
         currStart = start
@@ -24,8 +23,7 @@ class Segmenter:
         # Grabs until frameNo=end or until actual end of the video is reached
         while video.grab() and frameNo <= end:
             #update progress bar
-            self.progressBar.setProperty("value", (frameNo*100/end))
-            QApplication.processEvents()
+            self.progressCallback((frameNo - start) * 100 / end)
             
             (_, frame) = video.retrieve()
             
