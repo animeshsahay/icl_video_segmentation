@@ -43,25 +43,39 @@ class DesktopClient(QtGui.QMainWindow):
     def browse(self):
         """ Opens a system "browse" dialog box and preloads the video file. """
         file = str(QtGui.QFileDialog.getOpenFileName(self, "Open Video"))
-        self.ui.filePath.setText(file)
 
-        self.preload()
+        if file != "":
+            self.ui.filePath.setText(file)
+
+            self.preload()
 
     def save(self):
         file = str(QtGui.QFileDialog.getSaveFileName(self, "Save Project File"))
 
-        self.segments.save(file)
+        try:
+            self.segments.save(file)
+        except IOError:
+            self.errorBox("Charlie")
+        except OSError:
+            self.errorBox("Charlie")
 
     def loadCSV(self):
         # TODO : restrict to CSV files
-        file = str(QtGui.QFileDialog.getOpenFileName(self, "Open Segments File"))
+        file = str(QtGui.QFileDialog.getOpenFileName(self, "Open Segments File", "", "Segments file (*.csv)"))
+        if file == "": return
 
         segmentNames = []
-        with open(file, 'rb') as raw:
-            f = csv.reader(raw)
-            for [s, e, name] in f:
-                segmentNames.append((os.path.join(os.path.dirname(file), name), s, e))
-            raw.close()
+        try:
+            with open(file, 'rb') as raw:
+                f = csv.reader(raw)
+                for [s, e, name] in f:
+                    segmentNames.append((os.path.join(os.path.dirname(file), name), s, e))
+        except IOError:
+            self.errorBox("Roxana")
+            return
+        except ValueError:
+            self.errorBox("Agnieszka")
+            return
 
         self.fillList(segmentNames)
 
@@ -83,6 +97,7 @@ class DesktopClient(QtGui.QMainWindow):
         index = self.ui.segmentList.selectedIndexes()[0].row()
 
         self.segments.select(index)
+        self.updatePreviousNextButton()
         self.load(self.segments.current())
 
     def errorBox(self, name):
@@ -93,11 +108,11 @@ class DesktopClient(QtGui.QMainWindow):
         elif name == "Ben":
             birthday, error = "2211", "Start and end frames out of bounds."
         elif name == "Roxana":
-            birthday, error = "2405b", ""
+            birthday, error = "2405b", "I/O Error, could not load save file."
         elif name == "Agnieszka":
-            birthday, error = "2405a", ""
+            birthday, error = "2405a", "Not a valid save file."
         elif name == "Charlie":
-            birthday, error = "2709", ""
+            birthday, error = "2709", "I/O Error, could not save file."
 
         QtGui.QMessageBox.critical(self, "Error " + birthday, error)
 
