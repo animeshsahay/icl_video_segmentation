@@ -155,9 +155,6 @@ def standardCluster(faces, options):
 
     t = tarjan(similarities)
 
-def meansShiftCluster(faces, options):
-    raise "UnimplementedError"
-
 class Cluster:
     def __init__(self, faces):
         assert(len(faces) > 0)
@@ -195,26 +192,72 @@ def kMeansCluster(faces, options):
 
     return [[frame for frame, _ in cluster.faces] for cluster in clusters]
 
+def meansShiftCluster(faces, options):
+    assert(options["comparator"] == PCAComparator)
+
+    group = options["comparator"](faces)
+    faces = [(frame, group.project(cv2.cvtColor(face, cv2.COLOR_RGB2GRAY))) for frame, face in faces]
+
+    #Generate bandwidth
+    amount = max(int(len(faces) * 0.3), 1)
+    avgs   = []
+    for i, (_, face1) in enumerate(faces):
+        dists = np.sort([getDist(face1, face2)
+                         for j, (_, face2) in enumerate(faces)
+                         if i != j])
+        avgs.append(np.mean(dists[0:min(len(dists), amount)]))
+
+    bandwidth = np.max(avgs)
+    cutoff    = 0.001 * bandwidth
+
+    #Generate seeds
+    seeds = [Cluster([face]) for face in faces]
+    clusters = []
+
+    for seed in seeds:
+        while True:
+            neighbours = [(frame, face) for frame, face in faces if getDist(seed.centre, face) <= bandwidth]
+            if len(neighbours) == 0:
+                break
+
+            if seed.update(neighbours) < cutoff:
+                clusters.append(seed)
+                break
+
+    clusters.sort(key = lambda s: len(s.faces), reverse = True)
+    unique = np.ones(len(clusters), dtype=np.bool)
+
+    for i, cluster in enumerate(clusters):
+        if unique[i]:
+            neighbours = [n for n, c in enumerate(clusters)
+                          if getDist(c.centre, cluster.centre) <= bandwidth]
+            unique[neighbours] = 0
+            unique[i] = 1
+
+    centres = [cluster.centre for cluster in np.array(clusters)[unique]]
+
+    clusters = [[] for _ in centres]
+
+    for frame, face in faces:
+        idx = np.argmin([getDist(face, centre) for centre in centres])
+        clusters[idx].append(frame)
+
+    return clusters
+
 def getDist(arr1, arr2):
     assert(arr1.shape == arr2.shape)
     distSqrd = np.sum(np.power(arr2 - arr1, 2))
     return math.sqrt(distSqrd)
 
 def mergeDefaults(options):
-    if "clusterThreshold" not in options:
-        options["clusterThreshold"] = 0.63
+    defaults = {"clusterThreshold" : 0.63,
+                "comparator"       : PCAComparator,
+                "clusterAlgorithm" : meansShiftCluster,
+                "k"                : 2,
+                "cutoff"           : 1}
 
-    if "comparator" not in options:
-        options["comparator"] = PCAComparator
-
-    if "clusterAlgorithm" not in options:
-        #options["clusterAlgorithm"] = standardCluster
-        options["clusterAlgorithm"] = kMeansCluster
-
-    if "k" not in options:
-        options["k"] = 2
-
-    if "cutoff" not in options:
-        options["cutoff"] = 1
+    for k, v in defaults.items():
+        if k not in options:
+            options[k] = v
 
     return options

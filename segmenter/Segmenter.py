@@ -152,14 +152,13 @@ def checkBlackFrame(frame):
     return True
 
 def mergeDefaults(options):
-    if "stateCallback" not in options:
-        options["stateCallback"] = lambda x: None
+    defaults = {"stateCallback"    : lambda x: None,
+                "progressCallback" : lambda x: None,
+                "currStep"         : 0}
 
-    if "progressCallback" not in options:
-        options["progressCallback"] = lambda x: None
-
-    if "currStep" not in options:
-        options["currStep"] = 0
+    for k, v in defaults.items():
+        if k not in options:
+            options[k] = v
 
     return options
 
