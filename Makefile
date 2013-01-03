@@ -1,6 +1,6 @@
 ARGS ?=
 TOP = $(shell pwd)
-export PYTHONPATH := $(TOP)/enzyme:$(TOP):$(TOP)/webpy:$(TOP)/jinja2:$(PYTHONPATH)
+export PYTHONPATH := $(TOP)/segmenter:$(TOP)/enzyme:$(TOP):$(TOP)/webpy:$(TOP)/jinja2:$(PYTHONPATH)
 
 .PHONY: dist test desktop shell cluster client
 
@@ -17,7 +17,7 @@ dist:
 	python $(TOP)/setup.py sdist
 
 test:
-	python -m unittest discover -p '*Test.py'
+	python -m unittest discover -s tests -p "*.py"
 
 gui:
 	pyuic4 segmenter/gui.ui -o segmenter/Gui.py

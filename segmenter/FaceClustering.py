@@ -1,8 +1,7 @@
 import cv2
+import math
 import numpy as np
-
-import sys
-from VideoWrapper import VideoWrapper, VideoCapture
+import random
 
 class FaceComparator:
     def __init__(self, faces):
@@ -28,13 +27,19 @@ class PCAComparator(FaceComparator):
     def compare(self, f1, f2):
         frame1, face1 = f1
         frame2, face2 = f2
-        face1 = cv2.cvtColor(face1, cv2.COLOR_RGB2GRAY)
-        face2 = cv2.cvtColor(face2, cv2.COLOR_RGB2GRAY)
-        return compareFaces(self.project(face1), self.project(face2))
+
+        face1    = cv2.cvtColor(face1, cv2.COLOR_RGB2GRAY)
+        face2    = cv2.cvtColor(face2, cv2.COLOR_RGB2GRAY)
+
+        f1p = self.eigvals * (self.project(face1) - self.minvals) / self.diffs
+        f2p = self.eigvals * (self.project(face2) - self.minvals) / self.diffs
+
+        #return np.square(f1p - f2p).sum()
+        return np.abs(f1p - f2p).sum()
 
     def project(self, iface):
-        face = np.asarray([(iface - self.mean).flatten()]).transpose()
-        return np.asarray([np.dot(self.eigvecs[0], faceval) for faceval in face]).reshape(iface.shape).astype(np.uint8)
+        face = (iface - self.mean).flatten()
+        return np.dot(self.eigvecs.T, face)
 
     def recompute(self):
         _faces = [face.flatten() for face in self.faces]
@@ -43,30 +48,35 @@ class PCAComparator(FaceComparator):
         mean          = faces.mean(axis = 0)
         unbiasedFaces = faces - mean
 
-        cov              = np.dot(unbiasedFaces, unbiasedFaces.transpose()) / unbiasedFaces.shape[0]
+        #TODO: Find out value when only one face
+        cov              = np.dot(unbiasedFaces, unbiasedFaces.transpose()) / (unbiasedFaces.shape[0] - 1)
         eigvals, eigvecs = np.linalg.eig(cov)
+        eigvecs          = np.dot(unbiasedFaces.transpose(), eigvecs)
 
         sortedidxs   = np.argsort(-eigvals)
-        self.eigvals = eigvals[sortedidxs][0:1]
-        self.eigvecs = eigvecs[:, sortedidxs][0:, 0:1]
+        self.eigvals = eigvals[sortedidxs] / eigvals.sum()
+        self.eigvecs = eigvecs[:, sortedidxs]
 
         self.mean = mean.reshape(self.faces[0].shape)
 
-def convertFaces(video, faceList = None):
+        projections = np.asarray([self.project(face) for face in self.faces])
+        self.minvals = projections.min(axis = 0)
+        self.maxvals = projections.max(axis = 0)
+        self.diffs   = np.abs(self.maxvals - self.minvals)
+
+def convertFaces(video):
     X = []
     biggestFace = (0, 0)
-
-    if faceList is None:
-        faceList = video.getFaces()
+    faceList = video.getFaces()
     
     for frame, faces in faceList:
         f = video.getFrame(frame)
         
         for face in faces:
-            if face[2]*face[3] > biggestFace[0]*biggestFace[1]:
+            if face[2] * face[3] > biggestFace[0] * biggestFace[1]:
                 biggestFace = (face[2], face[3])
             
-            X.append((frame, f[face[1]:(face[1]+face[3]), face[0]:(face[0]+face[2])]))
+            X.append((frame, f[face[1]:(face[1] + face[3]), face[0]:(face[0] + face[2])]))
 
     return map(lambda (frame, face): (frame, cv2.resize(face, biggestFace)), X)
 
@@ -119,11 +129,16 @@ def tarjan(graph):
 
     return output
 
-def clusterFaces(faces, t = 0.75, comparator = HistogramComparator):
+def clusterFaces(faces, options):
+    options = mergeDefaults(options)
+    clusters = options['clusterAlgorithm'](faces, options)
+    return [[faces[i] for i in l] for l in clusters]
+
+def standardCluster(faces, options):
     similarities = {}
     clusters = []
 
-    group = comparator(faces)
+    group = options["comparator"](faces)
 
     for i, f in enumerate(faces):
         for i2_, f2 in enumerate(faces[i:]):
@@ -131,7 +146,7 @@ def clusterFaces(faces, t = 0.75, comparator = HistogramComparator):
 
             v = 1.0 - group.compare(f, f2)
 
-            if v > t:
+            if v > options["clusterThreshold"]:
                 for (a, b) in [(i, i2), (i2, i)]:
                     try:
                         similarities[a].add(b)
@@ -139,12 +154,67 @@ def clusterFaces(faces, t = 0.75, comparator = HistogramComparator):
                         similarities[a] = set([b])
 
     t = tarjan(similarities)
-    return [[faces[i] for i in l] for l in t]
 
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        faces = [(i, cv2.imread("pics/img%d.jpg" % i)) for i in range(12)]
-    else:
-        faces = convertFaces(VideoWrapper(VideoCapture(sys.argv[1]), 360, 380))
+def meansShiftCluster(faces, options):
+    raise "UnimplementedError"
 
-    print clusterFaces(faces, comparator = HistogramComparator)
+class Cluster:
+    def __init__(self, faces):
+        assert(len(faces) > 0)
+        assert(all([faces[0][1].shape == face.shape for _, face in faces]))
+        self.centre = np.mean([face for _, face in faces], axis = 0)
+        self.faces = faces
+        self.shape = faces[0][1].shape
+
+    def __repr__(self):
+        return str([frame for frame, _ in self.faces])
+
+    def update(self, faces):
+        assert(len(faces) > 0)
+        self.faces = faces
+        oldCentre = self.centre
+        self.centre = np.mean([face for _, face in faces], axis = 0)
+        return getDist(oldCentre, self.centre)
+
+def kMeansCluster(faces, options):
+    assert(options["comparator"] == PCAComparator)
+
+    group = options["comparator"](faces)
+    faces = [(frame, group.project(cv2.cvtColor(face, cv2.COLOR_RGB2GRAY))) for frame, face in faces]
+
+    initial = random.sample(faces, options["k"])
+    clusters = [Cluster([f]) for f in initial]
+
+    biggestShift = options["cutoff"]
+    while biggestShift >= options["cutoff"]:
+        lists = [[] for _ in clusters]
+        for frame, face in faces:
+            idx = np.argmin([getDist(face, cluster.centre) for cluster in clusters])
+            lists[idx].append((frame, face))
+        biggestShift = np.max([c.update(l) for l, c in zip(lists, clusters)])
+
+    return [[frame for frame, _ in cluster.faces] for cluster in clusters]
+
+def getDist(arr1, arr2):
+    assert(arr1.shape == arr2.shape)
+    distSqrd = np.sum(np.power(arr2 - arr1, 2))
+    return math.sqrt(distSqrd)
+
+def mergeDefaults(options):
+    if "clusterThreshold" not in options:
+        options["clusterThreshold"] = 0.63
+
+    if "comparator" not in options:
+        options["comparator"] = PCAComparator
+
+    if "clusterAlgorithm" not in options:
+        #options["clusterAlgorithm"] = standardCluster
+        options["clusterAlgorithm"] = kMeansCluster
+
+    if "k" not in options:
+        options["k"] = 2
+
+    if "cutoff" not in options:
+        options["cutoff"] = 1
+
+    return options

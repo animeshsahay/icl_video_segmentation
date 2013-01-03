@@ -1,31 +1,44 @@
-from cv2 import *
-from VideoWrapper import *
-from FaceClustering import *
+import cv2
+from FaceClustering import clusterFaces, convertFaces
 
 class Segmenter:
-    def __init__(self, progressCallback = lambda percent: None, stateCallback = lambda text: None):
-        self.segments         = []
-        self.progressCallback = progressCallback
-        self.stateCallback    = stateCallback
+    def __init__(self):
+        self.segments = []
 
-    def run(self, videoWrapper, splitType):
+    def run(self, options):
         """
-        Only call after setArgs()! Depends on the arguments provided by Client before it can perform segmentation
-        Loops over the frames and splits them into segments, depending on the provided split type
+        Loops over frames and splits them into segments. Split
+        differently depending on the options passed in
         """
+
+        options      = mergeDefaults(options)
+        splitType    = options['splitType']
+        videoWrapper = options['videoWrapper']
 
         start = videoWrapper.start
         end   = videoWrapper.end
         fps   = videoWrapper.fps
-        video = videoWrapper.video
 
-        # Set progress bar label
-        self.stateCallback("Step 1/2: Finding segments...")
-
-        frameNo = start
+        frameNo   = start
         currStart = start
 
         if splitType == SplitType.ON_FACE_CLUSTERS:
+            options['steps'] += 2
+        else:
+            options['steps'] += 1
+
+        options['currStep'] += 1
+
+        if splitType == SplitType.EVERY_SECOND:
+            options['xSeconds'] = 1
+            splitType = SplitType.ON_X_SECONDS
+        elif splitType == SplitType.EVERY_TWO_SECONDS:
+            options['xSeconds'] = 2
+            splitType = SplitType.ON_X_SECONDS
+
+        if splitType == SplitType.ON_FACE_CLUSTERS:
+            options['stateCallback']("Step %d / %d: Preparing for face clustering. (This may take a while)" % (options["currStep"], options["steps"]))
+            options["currStep"] += 1
             lastClusterFound  = currStart
             frameCheckLength  = 10
             currFrameClusters = {}
@@ -33,52 +46,51 @@ class Segmenter:
             clusters          = {}
             faces             = videoWrapper.getFaces()
 
-            _clusters         = clusterFaces(convertFaces(videoWrapper, faces))
+            _clusters         = clusterFaces(convertFaces(videoWrapper), options)
             for i, l in enumerate(_clusters):
                 for frame, face in l:
                     if frame not in clusters:
                         clusters[frame] = []
                     clusters[frame].append(i)
+            del _clusters
 
-        video.set(cv.CV_CAP_PROP_POS_FRAMES, start)
+        options['stateCallback']("Step %d / %d: Finding segments..." % (options["currStep"], options["steps"]))
+        options["currStep"] += 1
 
         # Grabs until frameNo=end or until actual end of the video is reached
-        while video.grab() and frameNo <= end:
+        for frameNo in xrange(start, end):
             #update progress bar
-            self.progressCallback((frameNo - start) * 100 / end)
+            options['progressCallback']((frameNo - start) * 100 / (end - start))
             
-            (_, frame) = video.retrieve()
-            
-            # Convert to black and white
-            frame = binarise(frame)
+            frame = videoWrapper.getFrame(frameNo)
 
             # Splitting on black frames
-            if splitType == SplitType.ON_BLACK_FRAMES and checkBlackFrame(frame):
-                if frameNo - currStart > 0:
-                   self.segments.append(VideoWrapper(video, currStart, frameNo))
-                currStart = frameNo + 1
+            if splitType == SplitType.ON_BLACK_FRAMES:
+                # Convert to black and white
+                frame = binarise(frame)
+                if checkBlackFrame(frame):
+                    if frameNo - currStart > 0:
+                        self.segments.append(videoWrapper.getSegment(currStart, frameNo))
+                    currStart = frameNo + 1
 
-            # Splitting every second
-            elif splitType == SplitType.EVERY_SECOND:
-                if ((frameNo - start) % int(fps) == 0 and frameNo > start) or frameNo == end:
-                    self.segments.append(VideoWrapper(video, currStart, frameNo))
-                    currStart = frameNo + 1
-            
-            # Splitting every other second
-            elif splitType == SplitType.EVERY_TWO_SECONDS:
-                if ((frameNo - start) % int(2 * fps) == 0 and frameNo > start) or frameNo == end:
-                    self.segments.append(VideoWrapper(video, currStart, frameNo))
-                    currStart = frameNo + 1
+            # Splitting every x seconds
+            elif splitType == SplitType.ON_X_SECONDS:
+                if ((frameNo - start) % int(options["xSeconds"] * fps) == 0 and frameNo > start) or frameNo == end:
+                    self.segments.append(videoWrapper.getSegment(currStart, frameNo))
+                    currStart = frameNo
 
             # Splitting on face clusters
             elif splitType == SplitType.ON_FACE_CLUSTERS:
-                if frameNo == end:
-                    self.segments.append(VideoWrapper(video, currStart, frameNo))
+                if frameNo == end - 1:
+                    print("Segment between %d - %d" % (currStart, frameNo))
+                    self.segments.append(videoWrapper.getSegment(currStart, frameNo))
                 elif lastClusterFound + frameCheckLength <= frameNo:
-                    self.segments.append(VideoWrapper(video, currStart, lastClusterFound))
+                    print("Segment between %d - %d" % (currStart, lastClusterFound + 1))
+                    self.segments.append(videoWrapper.getSegment(currStart, lastClusterFound + 1))
 
                 if lastClusterFound + frameCheckLength <= frameNo:
                     currFrameClusters = newFrameClusters
+                    newFrameClusters = {}
                     lastClusterFound, currStart = frameNo, lastClusterFound + 1
 
                 discardFrame = frameNo - frameCheckLength - 1
@@ -95,11 +107,21 @@ class Segmenter:
                             newFrameClusters[cluster] = 0
                         newFrameClusters[cluster] += 1
 
-                    if lastClusterFound == frameNo:
-                        for cluster, count in newFrameClusters.items():
-                            if cluster not in currFrameClusters:
-                                currFrameClusters[cluster] = 0
-                            currFrameClusters[cluster] += 1
+                if all([v == 0 for v in currFrameClusters.values()]):
+                    lastClusterFound = frameNo
+
+                if lastClusterFound == frameNo:
+                    for cluster, count in newFrameClusters.items():
+                        if cluster not in currFrameClusters:
+                            currFrameClusters[cluster] = 0
+                        currFrameClusters[cluster] += count
+                    newFrameClusters = {}
+
+                #print "-------------------------"
+                #print frameNo
+                #print currFrameClusters
+                #print newFrameClusters
+                #print "-------------------------"
 
             # Unknown splitting type
             else:
@@ -109,15 +131,15 @@ class Segmenter:
 
         # No split possible - return self
         if self.segments == []:
-           self.segments = [self]
+           self.segments = [videoWrapper]
 
 def binarise(frame):
     """
     Binarise a grayscale frame. Threshold of 10 to maximise number of white
     pixels, thereby speeding up non black frame detection in checkBlackFrame.
     """
-    frame = cvtColor(frame, cv.CV_RGB2GRAY)
-    (_, frame) = threshold(frame, 10, 255, THRESH_BINARY)
+    frame    = cv2.cvtColor(frame, cv2.cv.CV_RGB2GRAY)
+    _, frame = cv2.threshold(frame, 10, 255, cv2.THRESH_BINARY)
     return frame
 
 def checkBlackFrame(frame):
@@ -129,9 +151,22 @@ def checkBlackFrame(frame):
 
     return True
 
+def mergeDefaults(options):
+    if "stateCallback" not in options:
+        options["stateCallback"] = lambda x: None
+
+    if "progressCallback" not in options:
+        options["progressCallback"] = lambda x: None
+
+    if "currStep" not in options:
+        options["currStep"] = 0
+
+    return options
+
 class SplitType:
     """ What to segment on. """
-    ON_BLACK_FRAMES = 0
-    EVERY_SECOND = 1
+    ON_BLACK_FRAMES   = 0
+    EVERY_SECOND      = 1
     EVERY_TWO_SECONDS = 2
-    ON_FACE_CLUSTERS = 3
+    ON_FACE_CLUSTERS  = 3
+    ON_X_SECONDS      = 4
