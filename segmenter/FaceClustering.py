@@ -238,9 +238,9 @@ def meansShiftCluster(faces, options):
 
     clusters = [[] for _ in centres]
 
-    for frame, face in faces:
+    for i, (_, face) in enumerate(faces):
         idx = np.argmin([getDist(face, centre) for centre in centres])
-        clusters[idx].append(frame)
+        clusters[idx].append(i)
 
     return clusters
 
