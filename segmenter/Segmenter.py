@@ -82,10 +82,12 @@ class Segmenter:
             # Splitting on face clusters
             elif splitType == SplitType.ON_FACE_CLUSTERS:
                 if frameNo == end - 1:
-                    print("Segment between %d - %d" % (currStart, frameNo))
+                    if options["verbose"] >= 1:
+                        print("Segment between %d - %d" % (currStart, frameNo))
                     self.segments.append(videoWrapper.getSegment(currStart, frameNo))
                 elif lastClusterFound + frameCheckLength <= frameNo:
-                    print("Segment between %d - %d" % (currStart, lastClusterFound + 1))
+                    if options["verbose"] >= 1:
+                        print("Segment between %d - %d" % (currStart, lastClusterFound + 1))
                     self.segments.append(videoWrapper.getSegment(currStart, lastClusterFound + 1))
 
                 if lastClusterFound + frameCheckLength <= frameNo:
@@ -155,7 +157,8 @@ def mergeDefaults(options):
     defaults = {"stateCallback"    : lambda x: None,
                 "progressCallback" : lambda x: None,
                 "currStep"         : 0,
-                "clusterLength"    : 20}
+                "clusterLength"    : 20,
+                "verbose"          : 1}
 
     for k, v in defaults.items():
         if k not in options:
