@@ -32,9 +32,45 @@ class DesktopClient(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.lastFrameButton, QtCore.SIGNAL("clicked()"), self.setLastFrame)
         QtCore.QObject.connect(self.ui.newButton, QtCore.SIGNAL("clicked()"), self.reset)
         QtCore.QObject.connect(self.ui.playNextButton, QtCore.SIGNAL("clicked()"), self.playNext)
+        QtCore.QObject.connect(self.ui.populateButton, QtCore.SIGNAL("clicked()"), self.populate)
         self.ui.segmentList.doubleClicked.connect(self.selectSegment)
+        self.ui.faceList.clicked.connect(self.selectFace)
 
         self.reset()
+
+    def populate(self):
+        model = QtGui.QStandardItemModel()
+
+        column1 = [] #QtGui.QStandardItem()
+        self.ui.faceList.setIconSize(QtCore.QSize(100,100))
+        
+        for i in xrange(0,10):
+            item = QtGui.QStandardItem(QtGui.QIcon("res/test.jpg"), "cross")
+            item.setEditable(True)
+            column1.append(item)
+
+        model.appendColumn(column1)
+
+        self.ui.faceList.setModel(model)
+
+    def selectFace(self):
+        index = self.ui.faceList.selectedIndexes()[0].row()
+
+        model = self.ui.faceList.model()
+        columns = model.columnCount() 
+        if columns > 1:
+            model.removeColumns(1, columns - 1)
+
+        column2 = [] #QtGui.QStandardItem()
+        
+        for i in xrange(0,10):
+            print("created")
+            item = QtGui.QStandardItem("segment")
+            item.setEditable(False)
+            column2.append(item)
+
+        model.appendColumn(column2)
+
 
     def setLastFrame(self):
         """ Set the end frame to be the last frame of the video. """

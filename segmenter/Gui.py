@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'segmenter/gui.ui'
+# Form implementation generated from reading ui file 'gui.ui'
 #
-# Created: Sun Jan  6 19:25:43 2013
+# Created: Sun Jan  6 20:32:14 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,7 +17,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(984, 641)
+        MainWindow.resize(982, 714)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -142,7 +142,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.groupBox_3.sizePolicy().hasHeightForWidth())
         self.groupBox_3.setSizePolicy(sizePolicy)
-        self.groupBox_3.setMinimumSize(QtCore.QSize(180, 0))
+        self.groupBox_3.setMinimumSize(QtCore.QSize(340, 0))
         self.groupBox_3.setObjectName(_fromUtf8("groupBox_3"))
         self.verticalLayoutWidget_4 = QtGui.QWidget(self.groupBox_3)
         self.verticalLayoutWidget_4.setGeometry(QtCore.QRect(0, 0, 331, 291))
@@ -343,20 +343,30 @@ class Ui_MainWindow(object):
         self.tabWidget.setObjectName(_fromUtf8("tabWidget"))
         self.segmentTab = QtGui.QWidget()
         self.segmentTab.setObjectName(_fromUtf8("segmentTab"))
+        self.gridLayout_9 = QtGui.QGridLayout(self.segmentTab)
+        self.gridLayout_9.setObjectName(_fromUtf8("gridLayout_9"))
+        self.gridLayout_8 = QtGui.QGridLayout()
+        self.gridLayout_8.setObjectName(_fromUtf8("gridLayout_8"))
         self.segmentList = QtGui.QListView(self.segmentTab)
-        self.segmentList.setGeometry(QtCore.QRect(0, 0, 256, 500))
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.segmentList.sizePolicy().hasHeightForWidth())
         self.segmentList.setSizePolicy(sizePolicy)
         self.segmentList.setObjectName(_fromUtf8("segmentList"))
+        self.gridLayout_8.addWidget(self.segmentList, 0, 0, 1, 1)
+        self.gridLayout_9.addLayout(self.gridLayout_8, 0, 0, 1, 1)
         self.tabWidget.addTab(self.segmentTab, _fromUtf8(""))
         self.facesTab = QtGui.QWidget()
         self.facesTab.setObjectName(_fromUtf8("facesTab"))
-        self.facesTree = QtGui.QTreeView(self.facesTab)
-        self.facesTree.setGeometry(QtCore.QRect(0, 0, 256, 500))
-        self.facesTree.setObjectName(_fromUtf8("facesTree"))
+        self.gridLayout_7 = QtGui.QGridLayout(self.facesTab)
+        self.gridLayout_7.setObjectName(_fromUtf8("gridLayout_7"))
+        self.gridLayout_6 = QtGui.QGridLayout()
+        self.gridLayout_6.setObjectName(_fromUtf8("gridLayout_6"))
+        self.faceList = QtGui.QColumnView(self.facesTab)
+        self.faceList.setObjectName(_fromUtf8("faceList"))
+        self.gridLayout_6.addWidget(self.faceList, 0, 0, 1, 1)
+        self.gridLayout_7.addLayout(self.gridLayout_6, 0, 0, 1, 1)
         self.tabWidget.addTab(self.facesTab, _fromUtf8(""))
         self.previewLayout.addWidget(self.tabWidget)
         self.videoBackground = QtGui.QGroupBox(self.videoPage)
@@ -388,6 +398,9 @@ class Ui_MainWindow(object):
         self.controlsLayout.addWidget(self.previousButton)
         spacerItem5 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.controlsLayout.addItem(spacerItem5)
+        self.populateButton = QtGui.QPushButton(self.videoPage)
+        self.populateButton.setObjectName(_fromUtf8("populateButton"))
+        self.controlsLayout.addWidget(self.populateButton)
         self.playButton = QtGui.QPushButton(self.videoPage)
         self.playButton.setEnabled(False)
         self.playButton.setObjectName(_fromUtf8("playButton"))
@@ -413,8 +426,8 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(0)
-        self.tabWidget.setCurrentIndex(0)
+        self.stackedWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.startFrame, self.endFrame)
         MainWindow.setTabOrder(self.endFrame, self.lastFrameButton)
@@ -465,6 +478,7 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.segmentTab), QtGui.QApplication.translate("MainWindow", "Segments", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.facesTab), QtGui.QApplication.translate("MainWindow", "Faces", None, QtGui.QApplication.UnicodeUTF8))
         self.previousButton.setText(QtGui.QApplication.translate("MainWindow", "Previous", None, QtGui.QApplication.UnicodeUTF8))
+        self.populateButton.setText(QtGui.QApplication.translate("MainWindow", "PushButton", None, QtGui.QApplication.UnicodeUTF8))
         self.playButton.setText(QtGui.QApplication.translate("MainWindow", "Play", None, QtGui.QApplication.UnicodeUTF8))
         self.playNextButton.setText(QtGui.QApplication.translate("MainWindow", "Play next", None, QtGui.QApplication.UnicodeUTF8))
         self.pauseButton.setText(QtGui.QApplication.translate("MainWindow", "Pause", None, QtGui.QApplication.UnicodeUTF8))
