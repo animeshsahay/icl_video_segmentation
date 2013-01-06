@@ -32,3 +32,6 @@ cluster:
 client:
 	python "$(TOP)/segmenter/Client.py" ${ARGS}
 
+validate:
+	python "$(TOP)/validation/stats.py"
+
