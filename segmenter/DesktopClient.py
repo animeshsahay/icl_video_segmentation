@@ -246,8 +246,7 @@ class DesktopClient(QtGui.QMainWindow):
             return self.errorBox("Ben")
 
         # create Segmenter object to segment the video
-        self.seg = Segmenter(lambda x: self.setProgress(x),
-                             lambda x: self.setState(x))
+        self.seg = Segmenter()
         
         # call Client.run, which in turn calls Segmenter.run to perform the segmentation
         segmentNames = cap.run(self.seg, self.ui.highlightFacesOption.isChecked(), "DIVX", "avi", True)
