@@ -12,7 +12,7 @@ if __name__ == "__main__":
         for length in frameLengths:
             print("   --- Length : " + str(s) + " -> " + str(s + length))
             client = Client("res/" + vid, SplitType.ON_FACE_CLUSTERS, start = s, end = s + length)
-            print("   Total: ")
-            timeit(lambda: client.run(Segmenter(), True, "THEO", "OGG", False), number = 1)
-            print("   Clustering/Segmentation: ")
-            timeit(lambda: client.run(Segmenter(), True, "THEO", "OGG", False), number = 1)
+            t1 = timeit(lambda: client.run(Segmenter(), True, "THEO", "OGG", False), number = 1)
+            t2 = timeit(lambda: client.run(Segmenter(), True, "THEO", "OGG", False), number = 1)
+            print("   Total: " + str(t1))
+            print("   Clustering/Segmentation: " + str(t2))
