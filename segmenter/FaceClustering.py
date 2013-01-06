@@ -153,7 +153,7 @@ def standardCluster(faces, options):
                     except:
                         similarities[a] = set([b])
 
-    t = tarjan(similarities)
+    return tarjan(similarities)
 
 class Cluster:
     def __init__(self, faces):
@@ -192,7 +192,7 @@ def kMeansCluster(faces, options):
 
     return [[frame for frame, _ in cluster.faces] for cluster in clusters]
 
-def meansShiftCluster(faces, options):
+def meanShiftCluster(faces, options):
     assert(options["comparator"] == PCAComparator)
 
     group = options["comparator"](faces)
@@ -252,7 +252,7 @@ def getDist(arr1, arr2):
 def mergeDefaults(options):
     defaults = {"clusterThreshold" : 0.63,
                 "comparator"       : PCAComparator,
-                "clusterAlgorithm" : meansShiftCluster,
+                "clusterAlgorithm" : meanShiftCluster,
                 "k"                : 2,
                 "cutoff"           : 1}
 
