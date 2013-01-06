@@ -130,8 +130,12 @@ def tarjan(graph):
     return output
 
 def clusterFaces(faces, options):
+    if faces is None or faces == []:
+        return []
+
     options = mergeDefaults(options)
     clusters = options['clusterAlgorithm'](faces, options)
+
     return [[faces[i] for i in l] for l in clusters]
 
 def standardCluster(faces, options):
