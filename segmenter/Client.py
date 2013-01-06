@@ -33,9 +33,11 @@ class Client:
     # Run the correct functions based on what the client wants.
     def run(self, seg, highlight, codec, extension, qualified):
         # set arguments in Segmenter and start the segmentation        
-        options = {"videoWrapper" : self.videoWrapper,
-                   "splitType"    : self.splitType,
-                   "steps"        : 1}
+        options = {"videoWrapper"     : self.videoWrapper,
+                   "splitType"        : self.splitType,
+                   "steps"            : 1,
+                   "progressCallback" : self.progressCallback,
+                   "stateCallback"    : self.stateCallback}
 
         seg.run(options)
 
