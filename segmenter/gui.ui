@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>984</width>
-    <height>641</height>
+    <width>982</width>
+    <height>714</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -48,7 +48,7 @@ QGroupBox::title {
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="optionsPage">
        <property name="sizePolicy">
@@ -248,7 +248,7 @@ QGroupBox::title {
                      </property>
                      <property name="minimumSize">
                       <size>
-                       <width>180</width>
+                       <width>340</width>
                        <height>0</height>
                       </size>
                      </property>
@@ -690,43 +690,42 @@ QGroupBox::title {
                </size>
               </property>
               <property name="currentIndex">
-               <number>0</number>
+               <number>1</number>
               </property>
               <widget class="QWidget" name="segmentTab">
                <attribute name="title">
                 <string>Segments</string>
                </attribute>
-               <widget class="QListView" name="segmentList">
-                <property name="geometry">
-                 <rect>
-                  <x>0</x>
-                  <y>0</y>
-                  <width>256</width>
-                  <height>500</height>
-                 </rect>
-                </property>
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-               </widget>
+               <layout class="QGridLayout" name="gridLayout_9">
+                <item row="0" column="0">
+                 <layout class="QGridLayout" name="gridLayout_8">
+                  <item row="0" column="0">
+                   <widget class="QListView" name="segmentList">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
               </widget>
               <widget class="QWidget" name="facesTab">
                <attribute name="title">
                 <string>Faces</string>
                </attribute>
-               <widget class="QTreeView" name="facesTree">
-                <property name="geometry">
-                 <rect>
-                  <x>0</x>
-                  <y>0</y>
-                  <width>256</width>
-                  <height>500</height>
-                 </rect>
-                </property>
-               </widget>
+               <layout class="QGridLayout" name="gridLayout_7">
+                <item row="0" column="0">
+                 <layout class="QGridLayout" name="gridLayout_6">
+                  <item row="0" column="0">
+                   <widget class="QColumnView" name="faceList"/>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
               </widget>
              </widget>
             </item>
@@ -795,6 +794,13 @@ QGroupBox::title {
                </size>
               </property>
              </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="populateButton">
+              <property name="text">
+               <string>PushButton</string>
+              </property>
+             </widget>
             </item>
             <item>
              <widget class="QPushButton" name="playButton">
