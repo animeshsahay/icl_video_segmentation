@@ -1,6 +1,7 @@
 ARGS ?=
 TOP = $(shell pwd)
-export PYTHONPATH := $(TOP)/segmenter:$(TOP)/enzyme:$(TOP):$(TOP)/webpy:$(TOP)/jinja2:$(PYTHONPATH)
+export PYTHONPATH := $(TOP)/segmenter:$(TOP)/enzyme:$(TOP):$(TOP)/webpy:$(TOP)/jinja2:$(PYTHONPATH):/vol/bitbucket/jp2310/opt/opencv/lib/python2.7/dist-packages
+export LD_LIBRARY_PATH := /vol/bitbucket/jp2310/opt/opencv/lib
 
 .PHONY: dist test desktop shell cluster client
 
@@ -33,5 +34,5 @@ client:
 	python "$(TOP)/segmenter/Client.py" ${ARGS}
 
 validate:
-	python "$(TOP)/validation/stats.py"
+	python "$(TOP)/validation/stats.py" ${ARGS}
 
