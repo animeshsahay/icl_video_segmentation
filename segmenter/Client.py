@@ -39,6 +39,9 @@ class Client:
         options["progressCallback"] = self.progressCallback
         options["stateCallback"]    = self.stateCallback
 
+        if "write" not in options:
+            options["write"] = True
+
         seg.run(options)
 
         # Changing the progress bar label text
@@ -62,6 +65,9 @@ class Client:
                 segmentNames.append(("%s/out_%s.%s" % (directory, rnd, extension), segment.start, segment.end))
             else:
                 segmentNames.append("video/%s" % rnd)
+
+            if not options["write"]:
+                continue
 
             # If we want faces visible, show them
             if highlight:
