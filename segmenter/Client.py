@@ -31,13 +31,13 @@ class Client:
             assert 0, ("Unknown type of video parameter (%s)" % type(video))
 
     # Run the correct functions based on what the client wants.
-    def run(self, seg, highlight, codec, extension, qualified):
+    def run(self, seg, highlight, codec, extension, qualified, options = {}):
         # set arguments in Segmenter and start the segmentation        
-        options = {"videoWrapper"     : self.videoWrapper,
-                   "splitType"        : self.splitType,
-                   "steps"            : 1,
-                   "progressCallback" : self.progressCallback,
-                   "stateCallback"    : self.stateCallback}
+        options["videoWrapper"]     = self.videoWrapper
+        options["splitType"]        = self.splitType
+        options["steps"]            = 1
+        options["progressCallback"] = self.progressCallback
+        options["stateCallback"]    = self.stateCallback
 
         seg.run(options)
 

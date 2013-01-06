@@ -143,24 +143,7 @@ QGroupBox::title {
                <property name="topMargin">
                 <number>20</number>
                </property>
-               <item row="6" column="0">
-                <widget class="QRadioButton" name="everySecondOption">
-                 <property name="text">
-                  <string>Every second</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="7" column="0">
-                <widget class="QRadioButton" name="everyTwoSecondsOption">
-                 <property name="text">
-                  <string>Every two seconds</string>
-                 </property>
-                 <property name="checked">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="10" column="0">
+               <item row="12" column="0">
                 <widget class="QLineEdit" name="startFrame">
                  <property name="cursor">
                   <cursorShape>IBeamCursor</cursorShape>
@@ -170,7 +153,7 @@ QGroupBox::title {
                  </property>
                 </widget>
                </item>
-               <item row="15" column="0" colspan="2">
+               <item row="17" column="0" colspan="2">
                 <widget class="QProgressBar" name="segProgress">
                  <property name="maximum">
                   <number>100</number>
@@ -180,7 +163,7 @@ QGroupBox::title {
                  </property>
                 </widget>
                </item>
-               <item row="14" column="0">
+               <item row="16" column="0">
                 <widget class="QPushButton" name="segmentButton">
                  <property name="enabled">
                   <bool>false</bool>
@@ -190,21 +173,21 @@ QGroupBox::title {
                  </property>
                 </widget>
                </item>
-               <item row="16" column="0" colspan="2">
+               <item row="18" column="0" colspan="2">
                 <widget class="QLabel" name="barState">
                  <property name="text">
                   <string/>
                  </property>
                 </widget>
                </item>
-               <item row="13" column="0" colspan="2">
+               <item row="15" column="0" colspan="2">
                 <widget class="QCheckBox" name="highlightFacesOption">
                  <property name="text">
                   <string>Highlight faces</string>
                  </property>
                 </widget>
                </item>
-               <item row="12" column="1">
+               <item row="14" column="1">
                 <widget class="QPushButton" name="lastFrameButton">
                  <property name="enabled">
                   <bool>false</bool>
@@ -217,42 +200,28 @@ QGroupBox::title {
                  </property>
                 </widget>
                </item>
-               <item row="9" column="0">
+               <item row="11" column="0">
                 <widget class="QLabel" name="label_2">
                  <property name="text">
                   <string>Start frame : </string>
                  </property>
                 </widget>
                </item>
-               <item row="1" column="0" colspan="2">
-                <widget class="QRadioButton" name="blackFramesOption">
-                 <property name="text">
-                  <string>On black frames</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label">
-                 <property name="text">
-                  <string>Split type</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="11" column="0">
+               <item row="13" column="0">
                 <widget class="QLabel" name="label_3">
                  <property name="text">
                   <string>End frame : </string>
                  </property>
                 </widget>
                </item>
-               <item row="12" column="0">
+               <item row="14" column="0">
                 <widget class="QLineEdit" name="endFrame">
                  <property name="text">
                   <string/>
                  </property>
                 </widget>
                </item>
-               <item row="17" column="0" colspan="2">
+               <item row="19" column="0" colspan="2">
                 <spacer name="verticalSpacer_3">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
@@ -265,15 +234,349 @@ QGroupBox::title {
                  </property>
                 </spacer>
                </item>
-               <item row="8" column="0">
-                <widget class="QRadioButton" name="onFaceClustersOption">
-                 <property name="text">
-                  <string>On face clusters</string>
-                 </property>
-                 <property name="checked">
-                  <bool>true</bool>
-                 </property>
-                </widget>
+               <item row="2" column="0" colspan="2">
+                <layout class="QHBoxLayout" name="horizontalLayout">
+                 <item>
+                  <layout class="QVBoxLayout" name="verticalLayout_3">
+                   <item>
+                    <widget class="QGroupBox" name="groupBox_3">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>180</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <widget class="QWidget" name="verticalLayoutWidget_4">
+                      <property name="geometry">
+                       <rect>
+                        <x>0</x>
+                        <y>0</y>
+                        <width>331</width>
+                        <height>291</height>
+                       </rect>
+                      </property>
+                      <layout class="QVBoxLayout" name="verticalLayout_6">
+                       <item>
+                        <widget class="QLabel" name="label">
+                         <property name="text">
+                          <string>Split type</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QRadioButton" name="onFaceClustersOption">
+                         <property name="text">
+                          <string>On face clusters</string>
+                         </property>
+                         <property name="checked">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <layout class="QHBoxLayout" name="horizontalLayout_8">
+                         <item>
+                          <widget class="QLabel" name="label_11">
+                           <property name="text">
+                            <string>Max cluster length:</string>
+                           </property>
+                           <property name="indent">
+                            <number>20</number>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QSpinBox" name="clusterLength">
+                           <property name="minimum">
+                            <number>1</number>
+                           </property>
+                           <property name="maximum">
+                            <number>1000000</number>
+                           </property>
+                           <property name="value">
+                            <number>20</number>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </item>
+                       <item>
+                        <widget class="QRadioButton" name="everyXSecondsOption">
+                         <property name="text">
+                          <string>Every X seconds</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <layout class="QHBoxLayout" name="horizontalLayout_7">
+                         <item>
+                          <widget class="QLabel" name="label_10">
+                           <property name="text">
+                            <string>X:</string>
+                           </property>
+                           <property name="indent">
+                            <number>20</number>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QSpinBox" name="xSecs">
+                           <property name="minimum">
+                            <number>1</number>
+                           </property>
+                           <property name="maximum">
+                            <number>999999999</number>
+                           </property>
+                           <property name="value">
+                            <number>1</number>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </item>
+                       <item>
+                        <widget class="QRadioButton" name="blackFramesOption">
+                         <property name="text">
+                          <string>On black frames</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <spacer name="verticalSpacer_4">
+                         <property name="orientation">
+                          <enum>Qt::Vertical</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>20</width>
+                           <height>40</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                      </layout>
+                     </widget>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <widget class="QGroupBox" name="groupBox_4">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>360</width>
+                     <height>300</height>
+                    </size>
+                   </property>
+                   <widget class="QWidget" name="verticalLayoutWidget_3">
+                    <property name="geometry">
+                     <rect>
+                      <x>-1</x>
+                      <y>-1</y>
+                      <width>351</width>
+                      <height>301</height>
+                     </rect>
+                    </property>
+                    <layout class="QVBoxLayout" name="verticalLayout_5">
+                     <property name="leftMargin">
+                      <number>5</number>
+                     </property>
+                     <item>
+                      <widget class="QLabel" name="label_4">
+                       <property name="text">
+                        <string>Clustering algorithm</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QRadioButton" name="clusterStandard">
+                       <property name="text">
+                        <string>Standard</string>
+                       </property>
+                       <property name="checked">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_2">
+                       <item>
+                        <widget class="QLabel" name="label_5">
+                         <property name="frameShape">
+                          <enum>QFrame::NoFrame</enum>
+                         </property>
+                         <property name="text">
+                          <string>Clustering threshold:</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                         </property>
+                         <property name="indent">
+                          <number>20</number>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QDoubleSpinBox" name="clusterThreshold">
+                         <property name="decimals">
+                          <number>4</number>
+                         </property>
+                         <property name="maximum">
+                          <double>1.000000000000000</double>
+                         </property>
+                         <property name="singleStep">
+                          <double>0.010000000000000</double>
+                         </property>
+                         <property name="value">
+                          <double>0.630000000000000</double>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_6">
+                       <item>
+                        <widget class="QLabel" name="label_9">
+                         <property name="text">
+                          <string>Comparison method:</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="comparisonCombo">
+                         <item>
+                          <property name="text">
+                           <string>Histograms</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>PCA</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <widget class="QRadioButton" name="clusterKMeans">
+                       <property name="text">
+                        <string>K-means</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_3">
+                       <item>
+                        <widget class="QLabel" name="label_6">
+                         <property name="text">
+                          <string>K value:</string>
+                         </property>
+                         <property name="indent">
+                          <number>20</number>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QSpinBox" name="kValue">
+                         <property name="minimum">
+                          <number>1</number>
+                         </property>
+                         <property name="maximum">
+                          <number>99999999</number>
+                         </property>
+                         <property name="singleStep">
+                          <number>1</number>
+                         </property>
+                         <property name="value">
+                          <number>2</number>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_4">
+                       <item>
+                        <widget class="QLabel" name="label_7">
+                         <property name="text">
+                          <string>Shift cutoff:</string>
+                         </property>
+                         <property name="indent">
+                          <number>20</number>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QDoubleSpinBox" name="shiftCutoff">
+                         <property name="decimals">
+                          <number>4</number>
+                         </property>
+                         <property name="maximum">
+                          <double>100000.000000000000000</double>
+                         </property>
+                         <property name="singleStep">
+                          <double>0.500000000000000</double>
+                         </property>
+                         <property name="value">
+                          <double>1.000000000000000</double>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_5">
+                       <item>
+                        <widget class="QLabel" name="label_8">
+                         <property name="text">
+                          <string>Maximum iterations:</string>
+                         </property>
+                         <property name="indent">
+                          <number>20</number>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QSpinBox" name="maxIters">
+                         <property name="minimum">
+                          <number>-1</number>
+                         </property>
+                         <property name="maximum">
+                          <number>999999999</number>
+                         </property>
+                         <property name="value">
+                          <number>-1</number>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <widget class="QRadioButton" name="clusterMeanShift">
+                       <property name="text">
+                        <string>Mean-shift</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </widget>
+                 </item>
+                </layout>
                </item>
               </layout>
              </widget>
@@ -373,13 +676,58 @@ QGroupBox::title {
           <item>
            <layout class="QHBoxLayout" name="previewLayout">
             <item>
-             <widget class="QListView" name="segmentList">
+             <widget class="QTabWidget" name="tabWidget">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+               <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="minimumSize">
+               <size>
+                <width>256</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="currentIndex">
+               <number>0</number>
+              </property>
+              <widget class="QWidget" name="segmentTab">
+               <attribute name="title">
+                <string>Segments</string>
+               </attribute>
+               <widget class="QListView" name="segmentList">
+                <property name="geometry">
+                 <rect>
+                  <x>0</x>
+                  <y>0</y>
+                  <width>256</width>
+                  <height>500</height>
+                 </rect>
+                </property>
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+               </widget>
+              </widget>
+              <widget class="QWidget" name="facesTab">
+               <attribute name="title">
+                <string>Faces</string>
+               </attribute>
+               <widget class="QTreeView" name="facesTree">
+                <property name="geometry">
+                 <rect>
+                  <x>0</x>
+                  <y>0</y>
+                  <width>256</width>
+                  <height>500</height>
+                 </rect>
+                </property>
+               </widget>
+              </widget>
              </widget>
             </item>
             <item>
@@ -409,7 +757,7 @@ QGroupBox::title {
               </property>
               <layout class="QGridLayout" name="gridLayout_4">
                <item row="0" column="0">
-                <widget class="Phonon::VideoPlayer" name="videoPlayer">
+                <widget class="Phonon::VideoPlayer" name="videoPlayer" native="true">
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
@@ -520,13 +868,11 @@ QGroupBox::title {
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>blackFramesOption</tabstop>
   <tabstop>startFrame</tabstop>
   <tabstop>endFrame</tabstop>
   <tabstop>lastFrameButton</tabstop>
   <tabstop>highlightFacesOption</tabstop>
   <tabstop>segmentButton</tabstop>
-  <tabstop>segmentList</tabstop>
   <tabstop>previousButton</tabstop>
   <tabstop>playButton</tabstop>
   <tabstop>playNextButton</tabstop>

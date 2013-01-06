@@ -187,12 +187,14 @@ def kMeansCluster(faces, options):
     clusters = [Cluster([f]) for f in initial]
 
     biggestShift = options["cutoff"]
-    while biggestShift >= options["cutoff"]:
+    iterations = 0
+    while biggestShift >= options["cutoff"] or iterations == options["maxIterations"]:
         lists = [[] for _ in clusters]
         for frame, face in faces:
             idx = np.argmin([getDist(face, cluster.centre) for cluster in clusters])
             lists[idx].append((frame, face))
         biggestShift = np.max([c.update(l) for l, c in zip(lists, clusters)])
+        iterations += 1
 
     return [[frame for frame, _ in cluster.faces] for cluster in clusters]
 
@@ -258,7 +260,8 @@ def mergeDefaults(options):
                 "comparator"       : PCAComparator,
                 "clusterAlgorithm" : meanShiftCluster,
                 "k"                : 2,
-                "cutoff"           : 1}
+                "cutoff"           : 1,
+                "maxIterations"    : -1}
 
     for k, v in defaults.items():
         if k not in options:

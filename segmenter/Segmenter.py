@@ -31,16 +31,16 @@ class Segmenter:
 
         if splitType == SplitType.EVERY_SECOND:
             options['xSeconds'] = 1
-            splitType = SplitType.ON_X_SECONDS
+            splitType = SplitType.EVERY_X_SECONDS
         elif splitType == SplitType.EVERY_TWO_SECONDS:
             options['xSeconds'] = 2
-            splitType = SplitType.ON_X_SECONDS
+            splitType = SplitType.EVERY_X_SECONDS
 
         if splitType == SplitType.ON_FACE_CLUSTERS:
-            options['stateCallback']("Step %d / %d: Preparing for face clustering. (This may take a while)" % (options["currStep"], options["steps"]))
+            options["stateCallback"]("Step %d / %d: Preparing for face clustering. (This may take a while)" % (options["currStep"], options["steps"]))
             options["currStep"] += 1
             lastClusterFound  = currStart
-            frameCheckLength  = 10
+            frameCheckLength  = options["clusterLength"]
             currFrameClusters = {}
             newFrameClusters  = {}
             clusters          = {}
@@ -74,7 +74,7 @@ class Segmenter:
                     currStart = frameNo + 1
 
             # Splitting every x seconds
-            elif splitType == SplitType.ON_X_SECONDS:
+            elif splitType == SplitType.EVERY_X_SECONDS:
                 if ((frameNo - start) % int(options["xSeconds"] * fps) == 0 and frameNo > start) or frameNo == end:
                     self.segments.append(videoWrapper.getSegment(currStart, frameNo))
                     currStart = frameNo
@@ -154,7 +154,8 @@ def checkBlackFrame(frame):
 def mergeDefaults(options):
     defaults = {"stateCallback"    : lambda x: None,
                 "progressCallback" : lambda x: None,
-                "currStep"         : 0}
+                "currStep"         : 0,
+                "clusterLength"    : 20}
 
     for k, v in defaults.items():
         if k not in options:
@@ -168,4 +169,4 @@ class SplitType:
     EVERY_SECOND      = 1
     EVERY_TWO_SECONDS = 2
     ON_FACE_CLUSTERS  = 3
-    ON_X_SECONDS      = 4
+    EVERY_X_SECONDS   = 4

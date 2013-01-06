@@ -191,10 +191,8 @@ class DesktopClient(QtGui.QMainWindow):
         """ Radio button options to SplitType map. """
         if self.ui.blackFramesOption.isChecked():
             return SplitType.ON_BLACK_FRAMES
-        if self.ui.everySecondOption.isChecked():
-            return SplitType.EVERY_SECOND
-        if self.ui.everyTwoSecondsOption.isChecked():
-            return SplitType.EVERY_TWO_SECONDS
+        if self.ui.everyXSecondsOption.isChecked():
+            return SplitType.EVERY_X_SECONDS
         if self.ui.onFaceClustersOption.isChecked():
             return SplitType.ON_FACE_CLUSTERS
 
@@ -208,7 +206,7 @@ class DesktopClient(QtGui.QMainWindow):
         self.ui.segmentButton.setEnabled(False)
         self.ui.lastFrameButton.setEnabled(False)
         self.ui.highlightFacesOption.setCheckState(False)
-        self.ui.everyTwoSecondsOption.click()
+        self.ui.onFaceClustersOption.click()
         self.ui.startFrame.setText("0")
         self.ui.endFrame.setText("")
         self.ui.segProgress.setProperty("value", 0)
@@ -236,6 +234,18 @@ class DesktopClient(QtGui.QMainWindow):
         try:
             start = int(self.ui.startFrame.text())
             end = int(self.ui.endFrame.text())
+            splitType = self.getSplitType()
+
+            options = {}
+            if splitType == SplitType.EVERY_X_SECONDS:
+                options["xSeconds"] = self.ui.xSecs.value()
+
+            options["clusterThreshold"] = self.ui.clusterThreshold.value()
+            options["k"]                = self.ui.kValue.value()
+            options["cutoff"]           = self.ui.shiftCutoff.value()
+            options["maxIterations"]    = self.ui.maxIters.value()
+            options["clusterLength"]    = self.ui.clusterLength.value()
+
             cap = Client(str(self.ui.filePath.text()), self.getSplitType(),
                          lambda x: self.setProgress(x),
                          lambda x: self.setState(x),
@@ -249,7 +259,7 @@ class DesktopClient(QtGui.QMainWindow):
         self.seg = Segmenter()
         
         # call Client.run, which in turn calls Segmenter.run to perform the segmentation
-        segmentNames = cap.run(self.seg, self.ui.highlightFacesOption.isChecked(), "DIVX", "avi", True)
+        segmentNames = cap.run(self.seg, self.ui.highlightFacesOption.isChecked(), "DIVX", "avi", True, options)
 
         self.fillList(segmentNames)
 
