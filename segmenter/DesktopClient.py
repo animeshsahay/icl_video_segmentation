@@ -60,7 +60,7 @@ class DesktopClient(QtGui.QMainWindow):
 
         for i, cluster in enumerate(clusters):
             image = cv2.resize(cluster[0][1], (100, 100))
-            file = "{0}/face-%f.jpg".format(directory, random.random())
+            file = "{0}/face-{1}.jpg".format(directory, random.random())
             cv2.imwrite(file, image)
             item = QtGui.QStandardItem(QtGui.QIcon(file), "Face {0}".format(i + 1))
             item.setEditable(True)
