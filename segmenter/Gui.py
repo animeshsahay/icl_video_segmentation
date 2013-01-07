@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'gui.ui'
+# Form implementation generated from reading ui file 'segmenter/gui.ui'
 #
-# Created: Sun Jan  6 20:32:14 2013
-#      by: PyQt4 UI code generator 4.9.1
+# Created: Mon Jan  7 12:49:42 2013
+#      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,12 +12,21 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    _fromUtf8 = lambda s: s
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(982, 714)
+        MainWindow.resize(1030, 714)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -363,7 +372,8 @@ class Ui_MainWindow(object):
         self.gridLayout_7.setObjectName(_fromUtf8("gridLayout_7"))
         self.gridLayout_6 = QtGui.QGridLayout()
         self.gridLayout_6.setObjectName(_fromUtf8("gridLayout_6"))
-        self.faceList = QtGui.QColumnView(self.facesTab)
+        self.faceList = QtGui.QTreeView(self.facesTab)
+        self.faceList.setHeaderHidden(True)
         self.faceList.setObjectName(_fromUtf8("faceList"))
         self.gridLayout_6.addWidget(self.faceList, 0, 0, 1, 1)
         self.gridLayout_7.addLayout(self.gridLayout_6, 0, 0, 1, 1)
@@ -398,9 +408,6 @@ class Ui_MainWindow(object):
         self.controlsLayout.addWidget(self.previousButton)
         spacerItem5 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.controlsLayout.addItem(spacerItem5)
-        self.populateButton = QtGui.QPushButton(self.videoPage)
-        self.populateButton.setObjectName(_fromUtf8("populateButton"))
-        self.controlsLayout.addWidget(self.populateButton)
         self.playButton = QtGui.QPushButton(self.videoPage)
         self.playButton.setEnabled(False)
         self.playButton.setObjectName(_fromUtf8("playButton"))
@@ -442,46 +449,45 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.newButton, self.saveButton)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Video Segmentation", None, QtGui.QApplication.UnicodeUTF8))
-        self.filePath.setPlaceholderText(QtGui.QApplication.translate("MainWindow", "Please load a video file.", None, QtGui.QApplication.UnicodeUTF8))
-        self.browseButton.setText(QtGui.QApplication.translate("MainWindow", "Browse", None, QtGui.QApplication.UnicodeUTF8))
-        self.loadButton.setText(QtGui.QApplication.translate("MainWindow", "Load", None, QtGui.QApplication.UnicodeUTF8))
-        self.groupBox.setTitle(QtGui.QApplication.translate("MainWindow", "Options", None, QtGui.QApplication.UnicodeUTF8))
-        self.startFrame.setText(QtGui.QApplication.translate("MainWindow", "0", None, QtGui.QApplication.UnicodeUTF8))
-        self.segmentButton.setText(QtGui.QApplication.translate("MainWindow", "Segment", None, QtGui.QApplication.UnicodeUTF8))
-        self.highlightFacesOption.setText(QtGui.QApplication.translate("MainWindow", "Highlight faces", None, QtGui.QApplication.UnicodeUTF8))
-        self.lastFrameButton.setText(QtGui.QApplication.translate("MainWindow", "Last frame", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_2.setText(QtGui.QApplication.translate("MainWindow", "Start frame : ", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_3.setText(QtGui.QApplication.translate("MainWindow", "End frame : ", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("MainWindow", "Split type", None, QtGui.QApplication.UnicodeUTF8))
-        self.onFaceClustersOption.setText(QtGui.QApplication.translate("MainWindow", "On face clusters", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_11.setText(QtGui.QApplication.translate("MainWindow", "Max cluster length:", None, QtGui.QApplication.UnicodeUTF8))
-        self.everyXSecondsOption.setText(QtGui.QApplication.translate("MainWindow", "Every X seconds", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_10.setText(QtGui.QApplication.translate("MainWindow", "X:", None, QtGui.QApplication.UnicodeUTF8))
-        self.blackFramesOption.setText(QtGui.QApplication.translate("MainWindow", "On black frames", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_4.setText(QtGui.QApplication.translate("MainWindow", "Clustering algorithm", None, QtGui.QApplication.UnicodeUTF8))
-        self.clusterStandard.setText(QtGui.QApplication.translate("MainWindow", "Standard", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_5.setText(QtGui.QApplication.translate("MainWindow", "Clustering threshold:", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_9.setText(QtGui.QApplication.translate("MainWindow", "Comparison method:", None, QtGui.QApplication.UnicodeUTF8))
-        self.comparisonCombo.setItemText(0, QtGui.QApplication.translate("MainWindow", "Histograms", None, QtGui.QApplication.UnicodeUTF8))
-        self.comparisonCombo.setItemText(1, QtGui.QApplication.translate("MainWindow", "PCA", None, QtGui.QApplication.UnicodeUTF8))
-        self.clusterKMeans.setText(QtGui.QApplication.translate("MainWindow", "K-means", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_6.setText(QtGui.QApplication.translate("MainWindow", "K value:", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_7.setText(QtGui.QApplication.translate("MainWindow", "Shift cutoff:", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_8.setText(QtGui.QApplication.translate("MainWindow", "Maximum iterations:", None, QtGui.QApplication.UnicodeUTF8))
-        self.clusterMeanShift.setText(QtGui.QApplication.translate("MainWindow", "Mean-shift", None, QtGui.QApplication.UnicodeUTF8))
-        self.groupBox_2.setTitle(QtGui.QApplication.translate("MainWindow", "Info", None, QtGui.QApplication.UnicodeUTF8))
-        self.videoTitleLabel.setText(QtGui.QApplication.translate("MainWindow", "Title:", None, QtGui.QApplication.UnicodeUTF8))
-        self.videoLengthLabel.setText(QtGui.QApplication.translate("MainWindow", "Video length: ", None, QtGui.QApplication.UnicodeUTF8))
-        self.newButton.setText(QtGui.QApplication.translate("MainWindow", "New segmentation", None, QtGui.QApplication.UnicodeUTF8))
-        self.saveButton.setText(QtGui.QApplication.translate("MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.segmentTab), QtGui.QApplication.translate("MainWindow", "Segments", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.facesTab), QtGui.QApplication.translate("MainWindow", "Faces", None, QtGui.QApplication.UnicodeUTF8))
-        self.previousButton.setText(QtGui.QApplication.translate("MainWindow", "Previous", None, QtGui.QApplication.UnicodeUTF8))
-        self.populateButton.setText(QtGui.QApplication.translate("MainWindow", "PushButton", None, QtGui.QApplication.UnicodeUTF8))
-        self.playButton.setText(QtGui.QApplication.translate("MainWindow", "Play", None, QtGui.QApplication.UnicodeUTF8))
-        self.playNextButton.setText(QtGui.QApplication.translate("MainWindow", "Play next", None, QtGui.QApplication.UnicodeUTF8))
-        self.pauseButton.setText(QtGui.QApplication.translate("MainWindow", "Pause", None, QtGui.QApplication.UnicodeUTF8))
-        self.nextButton.setText(QtGui.QApplication.translate("MainWindow", "Next", None, QtGui.QApplication.UnicodeUTF8))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Video Segmentation", None))
+        self.filePath.setPlaceholderText(_translate("MainWindow", "Please load a video file.", None))
+        self.browseButton.setText(_translate("MainWindow", "Browse", None))
+        self.loadButton.setText(_translate("MainWindow", "Load", None))
+        self.groupBox.setTitle(_translate("MainWindow", "Options", None))
+        self.startFrame.setText(_translate("MainWindow", "0", None))
+        self.segmentButton.setText(_translate("MainWindow", "Segment", None))
+        self.highlightFacesOption.setText(_translate("MainWindow", "Highlight faces", None))
+        self.lastFrameButton.setText(_translate("MainWindow", "Last frame", None))
+        self.label_2.setText(_translate("MainWindow", "Start frame : ", None))
+        self.label_3.setText(_translate("MainWindow", "End frame : ", None))
+        self.label.setText(_translate("MainWindow", "Split type", None))
+        self.onFaceClustersOption.setText(_translate("MainWindow", "On face clusters", None))
+        self.label_11.setText(_translate("MainWindow", "Max cluster length:", None))
+        self.everyXSecondsOption.setText(_translate("MainWindow", "Every X seconds", None))
+        self.label_10.setText(_translate("MainWindow", "X:", None))
+        self.blackFramesOption.setText(_translate("MainWindow", "On black frames", None))
+        self.label_4.setText(_translate("MainWindow", "Clustering algorithm", None))
+        self.clusterStandard.setText(_translate("MainWindow", "Standard", None))
+        self.label_5.setText(_translate("MainWindow", "Clustering threshold:", None))
+        self.label_9.setText(_translate("MainWindow", "Comparison method:", None))
+        self.comparisonCombo.setItemText(0, _translate("MainWindow", "Histograms", None))
+        self.comparisonCombo.setItemText(1, _translate("MainWindow", "PCA", None))
+        self.clusterKMeans.setText(_translate("MainWindow", "K-means", None))
+        self.label_6.setText(_translate("MainWindow", "K value:", None))
+        self.label_7.setText(_translate("MainWindow", "Shift cutoff:", None))
+        self.label_8.setText(_translate("MainWindow", "Maximum iterations:", None))
+        self.clusterMeanShift.setText(_translate("MainWindow", "Mean-shift", None))
+        self.groupBox_2.setTitle(_translate("MainWindow", "Info", None))
+        self.videoTitleLabel.setText(_translate("MainWindow", "Title:", None))
+        self.videoLengthLabel.setText(_translate("MainWindow", "Video length: ", None))
+        self.newButton.setText(_translate("MainWindow", "New segmentation", None))
+        self.saveButton.setText(_translate("MainWindow", "Save", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.segmentTab), _translate("MainWindow", "Segments", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.facesTab), _translate("MainWindow", "Faces", None))
+        self.previousButton.setText(_translate("MainWindow", "Previous", None))
+        self.playButton.setText(_translate("MainWindow", "Play", None))
+        self.playNextButton.setText(_translate("MainWindow", "Play next", None))
+        self.pauseButton.setText(_translate("MainWindow", "Pause", None))
+        self.nextButton.setText(_translate("MainWindow", "Next", None))
 
 from PyQt4 import phonon

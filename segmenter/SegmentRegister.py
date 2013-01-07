@@ -40,6 +40,13 @@ class SegmentRegister:
 
         self.index = index
 
+    def getIndexFromStartEnd(self, start, end):
+        for i, (_, s, e) in enumerate(self.segments):
+            if s == start and e == end:
+                return i
+
+        return None
+
     def currIndex(self):
         return self.index
 

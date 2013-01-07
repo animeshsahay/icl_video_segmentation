@@ -58,6 +58,7 @@ class PCAComparator(FaceComparator):
         self.eigvecs = eigvecs[:, sortedidxs]
 
         self.mean = mean.reshape(self.faces[0].shape)
+        #cv2.imwrite("mean-%f.jpg" % random.random(), np.array(self.mean, dtype=np.uint8))
 
         projections = np.asarray([self.project(face) for face in self.faces])
         self.minvals = projections.min(axis = 0)

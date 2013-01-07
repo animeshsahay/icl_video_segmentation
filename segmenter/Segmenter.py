@@ -46,13 +46,12 @@ class Segmenter:
             clusters          = {}
             faces             = videoWrapper.getFaces()
 
-            _clusters         = clusterFaces(convertFaces(videoWrapper), options)
-            for i, l in enumerate(_clusters):
+            options["clusters"] = clusterFaces(convertFaces(videoWrapper), options)
+            for i, l in enumerate(options["clusters"]):
                 for frame, face in l:
                     if frame not in clusters:
                         clusters[frame] = []
                     clusters[frame].append(i)
-            del _clusters
 
         options['stateCallback']("Step %d / %d: Finding segments..." % (options["currStep"], options["steps"]))
         options["currStep"] += 1
@@ -76,8 +75,8 @@ class Segmenter:
             # Splitting every x seconds
             elif splitType == SplitType.EVERY_X_SECONDS:
                 if ((frameNo - start) % int(options["xSeconds"] * fps) == 0 and frameNo > start) or frameNo == end:
-                    self.segments.append(videoWrapper.getSegment(currStart, frameNo))
-                    currStart = frameNo
+                    self.segments.append(videoWrapper.getSegment(currStart, frameNo + 1))
+                    currStart = frameNo + 1
 
             # Splitting on face clusters
             elif splitType == SplitType.ON_FACE_CLUSTERS:

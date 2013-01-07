@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>982</width>
+    <width>1030</width>
     <height>714</height>
    </rect>
   </property>
@@ -721,7 +721,11 @@ QGroupBox::title {
                 <item row="0" column="0">
                  <layout class="QGridLayout" name="gridLayout_6">
                   <item row="0" column="0">
-                   <widget class="QColumnView" name="faceList"/>
+                   <widget class="QTreeView" name="faceList">
+                    <property name="headerHidden">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </item>
@@ -756,7 +760,7 @@ QGroupBox::title {
               </property>
               <layout class="QGridLayout" name="gridLayout_4">
                <item row="0" column="0">
-                <widget class="Phonon::VideoPlayer" name="videoPlayer" native="true">
+                <widget class="Phonon::VideoPlayer" name="videoPlayer">
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
@@ -794,13 +798,6 @@ QGroupBox::title {
                </size>
               </property>
              </spacer>
-            </item>
-            <item>
-             <widget class="QPushButton" name="populateButton">
-              <property name="text">
-               <string>PushButton</string>
-              </property>
-             </widget>
             </item>
             <item>
              <widget class="QPushButton" name="playButton">

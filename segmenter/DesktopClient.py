@@ -5,6 +5,8 @@ from VideoWrapper import *
 from Client import *
 from SegmentRegister import *
 from VideoInfo import *
+import cv2
+import random
 import time
 from multiprocessing import Process, Queue
 from Segmenter import *
@@ -32,45 +34,52 @@ class DesktopClient(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.lastFrameButton, QtCore.SIGNAL("clicked()"), self.setLastFrame)
         QtCore.QObject.connect(self.ui.newButton, QtCore.SIGNAL("clicked()"), self.reset)
         QtCore.QObject.connect(self.ui.playNextButton, QtCore.SIGNAL("clicked()"), self.playNext)
-        QtCore.QObject.connect(self.ui.populateButton, QtCore.SIGNAL("clicked()"), self.populate)
         self.ui.segmentList.doubleClicked.connect(self.selectSegment)
-        self.ui.faceList.clicked.connect(self.selectFace)
+        self.ui.faceList.doubleClicked.connect(self.selectSegmentFromFace)
+        self.ui.faceList.setIconSize(QtCore.QSize(100,100))
 
         self.reset()
 
-    def populate(self):
+    def selectSegmentFromFace(self):
+        index = self.ui.faceList.selectedIndexes()[0]
+
+        if index.parent().row() == -1:
+            return
+
+        _, start, _, end = index.data().toString().split(" ")
+        start = int(start)
+        end   = int(end)
+
+        index = self.segments.getIndexFromStartEnd(start, end)
+        self.segments.select(index);
+        self.selectListEntry()
+        self.selectSegment()
+
+    def fillFaces(self, segments, clusters):
         model = QtGui.QStandardItemModel()
 
-        column1 = [] #QtGui.QStandardItem()
-        self.ui.faceList.setIconSize(QtCore.QSize(100,100))
-        
-        for i in xrange(0,10):
-            item = QtGui.QStandardItem(QtGui.QIcon("res/test.jpg"), "cross")
+        for i, cluster in enumerate(clusters):
+            image = cv2.resize(cluster[0][1], (100, 100))
+            file = "{0}/face-%f.jpg".format(directory, random.random())
+            cv2.imwrite(file, image)
+            item = QtGui.QStandardItem(QtGui.QIcon(file), "Face {0}".format(i + 1))
             item.setEditable(True)
-            column1.append(item)
 
-        model.appendColumn(column1)
+            segmentSet = set()
+            for frame, _ in cluster:
+                for _, start, end in segments:
+                    if frame >= start and frame < end:
+                        segmentSet.add((start, end))
+
+            segmentList = sorted(list(segmentSet))
+            for start, end in segmentList:
+                item2 = QtGui.QStandardItem("Segment %d - %d" % (start, end))
+                item2.setEditable(False)
+                item.appendRow(item2)
+
+            model.appendRow(item)
 
         self.ui.faceList.setModel(model)
-
-    def selectFace(self):
-        index = self.ui.faceList.selectedIndexes()[0].row()
-
-        model = self.ui.faceList.model()
-        columns = model.columnCount() 
-        if columns > 1:
-            model.removeColumns(1, columns - 1)
-
-        column2 = [] #QtGui.QStandardItem()
-        
-        for i in xrange(0,10):
-            print("created")
-            item = QtGui.QStandardItem("segment")
-            item.setEditable(False)
-            column2.append(item)
-
-        model.appendColumn(column2)
-
 
     def setLastFrame(self):
         """ Set the end frame to be the last frame of the video. """
@@ -248,6 +257,9 @@ class DesktopClient(QtGui.QMainWindow):
         self.ui.segProgress.setProperty("value", 0)
         self.ui.barState.setText("")
 
+        model = QtGui.QStandardItemModel()
+        self.ui.faceList.setModel(model)
+
         self.showOptionsScreen()
 
     def setProgress(self, x):
@@ -296,6 +308,9 @@ class DesktopClient(QtGui.QMainWindow):
         
         # call Client.run, which in turn calls Segmenter.run to perform the segmentation
         segmentNames = cap.run(self.seg, self.ui.highlightFacesOption.isChecked(), "DIVX", "avi", True, options)
+
+        if "clusters" in options:
+            self.fillFaces(segmentNames, options["clusters"])
 
         self.fillList(segmentNames)
 
