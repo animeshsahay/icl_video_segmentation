@@ -249,7 +249,7 @@ QGroupBox::title {
                      <property name="minimumSize">
                       <size>
                        <width>340</width>
-                       <height>0</height>
+                       <height>300</height>
                       </size>
                      </property>
                      <widget class="QWidget" name="verticalLayoutWidget_4">
@@ -282,7 +282,7 @@ QGroupBox::title {
                        <item>
                         <layout class="QHBoxLayout" name="horizontalLayout_8">
                          <item>
-                          <widget class="QLabel" name="label_11">
+                          <widget class="QLabel" name="segmentLengthLabel">
                            <property name="text">
                             <string>Max segment length:</string>
                            </property>
@@ -360,6 +360,33 @@ QGroupBox::title {
                          </property>
                         </spacer>
                        </item>
+                       <item>
+                        <layout class="QHBoxLayout" name="horizontalLayout_9">
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <item>
+                          <widget class="QPushButton" name="advancedButton">
+                           <property name="text">
+                            <string>Show advanced settings</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <spacer name="horizontalSpacer_4">
+                           <property name="orientation">
+                            <enum>Qt::Horizontal</enum>
+                           </property>
+                           <property name="sizeHint" stdset="0">
+                            <size>
+                             <width>40</width>
+                             <height>20</height>
+                            </size>
+                           </property>
+                          </spacer>
+                         </item>
+                        </layout>
+                       </item>
                       </layout>
                      </widget>
                     </widget>
@@ -367,7 +394,7 @@ QGroupBox::title {
                   </layout>
                  </item>
                  <item>
-                  <widget class="QGroupBox" name="groupBox_4">
+                  <widget class="QGroupBox" name="advancedSettings">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                      <horstretch>0</horstretch>

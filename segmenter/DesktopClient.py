@@ -35,11 +35,30 @@ class DesktopClient(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.lastFrameButton, QtCore.SIGNAL("clicked()"), self.setLastFrame)
         QtCore.QObject.connect(self.ui.newButton, QtCore.SIGNAL("clicked()"), self.reset)
         QtCore.QObject.connect(self.ui.playNextButton, QtCore.SIGNAL("clicked()"), self.playNext)
+        QtCore.QObject.connect(self.ui.advancedButton, QtCore.SIGNAL("clicked()"), self.toggleAdvanced)
         self.ui.segmentList.doubleClicked.connect(self.selectSegment)
         self.ui.faceList.doubleClicked.connect(self.selectSegmentFromFace)
         self.ui.faceList.setIconSize(QtCore.QSize(100,100))
 
+        self.advanced = False
         self.reset()
+
+    def toggleAdvanced(self, advancedSetting = None):
+        if advancedSetting is None:
+            self.advanced = not self.advanced
+        else:
+            self.advanced = advancedSetting
+
+        if self.advanced:
+            self.ui.advancedSettings.show()
+            self.ui.advancedButton.setText("Hide advanced settings")
+            self.ui.segmentLength.show()
+            self.ui.segmentLengthLabel.show()
+        else:
+            self.ui.advancedSettings.hide()
+            self.ui.advancedButton.setText("Show advanced settings")
+            self.ui.segmentLength.hide()
+            self.ui.segmentLengthLabel.hide()
 
     def selectSegmentFromFace(self):
         index = self.ui.faceList.selectedIndexes()[0]
@@ -274,6 +293,8 @@ class DesktopClient(QtGui.QMainWindow):
         self.ui.endFrame.setText("")
         self.ui.segProgress.setProperty("value", 0)
         self.ui.barState.setText("")
+
+        self.toggleAdvanced(False)
 
         model = QtGui.QStandardItemModel()
         self.ui.faceList.setModel(model)
