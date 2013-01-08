@@ -39,6 +39,9 @@ class Client:
         options["progressCallback"] = self.progressCallback
         options["stateCallback"]    = self.stateCallback
 
+        if "audio" not in options:
+            options["audio"] = None
+
         if "write" not in options:
             options["write"] = True
 
@@ -75,9 +78,9 @@ class Client:
                 segment.write("%s/out_%s.%s" % (directory, rnd, extension),
                               codec,
                               frameModifier = lambda frameNo, frame:
-                                  integrateFace(frameNo, frame, faces))
+                                  integrateFace(frameNo, frame, faces), audiofile = options["audio"])
             else:
-                segment.write("%s/out_%s.%s" % (directory, rnd, extension), codec)
+                segment.write("%s/out_%s.%s" % (directory, rnd, extension), codec, audiofile = options["audio"])
 
             sizefile = open("%s/out_%s.size" % (directory, rnd), "wb")
             sizefile.write("%f" % segment.length)

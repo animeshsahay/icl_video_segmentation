@@ -48,7 +48,7 @@ QGroupBox::title {
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="optionsPage">
        <property name="sizePolicy">
@@ -284,7 +284,7 @@ QGroupBox::title {
                          <item>
                           <widget class="QLabel" name="label_11">
                            <property name="text">
-                            <string>Max cluster length:</string>
+                            <string>Max segment length:</string>
                            </property>
                            <property name="indent">
                             <number>20</number>
@@ -292,7 +292,7 @@ QGroupBox::title {
                           </widget>
                          </item>
                          <item>
-                          <widget class="QSpinBox" name="clusterLength">
+                          <widget class="QSpinBox" name="segmentLength">
                            <property name="minimum">
                             <number>1</number>
                            </property>
@@ -452,6 +452,9 @@ QGroupBox::title {
                         <widget class="QLabel" name="label_9">
                          <property name="text">
                           <string>Comparison method:</string>
+                         </property>
+                         <property name="indent">
+                          <number>20</number>
                          </property>
                         </widget>
                        </item>

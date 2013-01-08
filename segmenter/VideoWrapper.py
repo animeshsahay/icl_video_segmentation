@@ -2,6 +2,8 @@
 
 import cv2
 import numpy as np
+from subprocess import call
+from os import devnull
 
 class BoundsError(Exception):
     def __init__(self):
@@ -45,7 +47,7 @@ class VideoWrapper:
                and self.end   == other.end
 
     def write(self, filename, codec,
-              frameModifier = lambda frameNo, frame: frame):
+              frameModifier = lambda frameNo, frame: frame, audiofile = None):
         """
         Writes the segment to file.
         """
@@ -61,6 +63,15 @@ class VideoWrapper:
             writer.write(frame)
 
         del writer
+
+        split = filename.rsplit(".", 1)
+        if audiofile and split[1] == "mkv":
+            tmpfilename = "{0}.tmp.{1}".format(split[0], split[1])
+            ffmpegcall = ["ffmpeg", "-i", audiofile, "-itsoffset", toOffset(-self.start / self.fps), "-i", filename, "-map", "1:0", "-map", "0:1", "-y", tmpfilename]
+            with open(devnull, "w") as DEVNULL:
+                call(["rm", "-f", tmpfilename], stdout = DEVNULL, stderr = DEVNULL)
+                call(ffmpegcall, stdout = DEVNULL, stderr = DEVNULL)
+                call(["mv", tmpfilename, filename], stdout = DEVNULL, stderr = DEVNULL)
 
     def getSegment(self, start, end):
         """
@@ -82,7 +93,7 @@ class VideoWrapper:
 
         return wrapper
 
-    def getFaces(self):
+    def getFaces(self, minSize = (30, 30), minNeighbors = 11):
         """
         Returns the faces in a video segment.
         Memoises the result for future use
@@ -104,9 +115,9 @@ class VideoWrapper:
             img = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             img = cv2.equalizeHist(img)
 
-            rects = cascade.detectMultiScale(img, minNeighbors = 11,
+            rects = cascade.detectMultiScale(img, minNeighbors = minNeighbors,
                                              flags = cv2.cv.CV_HAAR_SCALE_IMAGE,
-                                             minSize = (30, 30))
+                                             minSize = minSize)
 
             if len(rects) > 0:
                 self.faces.append((frameNo, rects))
@@ -139,3 +150,21 @@ def within((a, b), (c, d)):
     i.e. a <= b and c <= d
     """
     return a >= c and a < d and b <= d
+
+def toOffset(secs):
+    if secs >= 0:
+        hh = 1
+    else:
+        hh = -1
+        secs = -secs
+
+    hh *= int(secs / (60 * 60))
+    secs -= hh * 60 * 60
+    mm = int(secs / 60)
+    secs -= mm * 60
+    ss = int(secs)
+    secs -= ss
+    xxx = secs
+    assert(hh < 100 and mm < 60 and ss < 60 and xxx < 1000)
+    xxx = "{0:.3f}".format(xxx).split(".", 1)[1]
+    return "{0}:{1}:{2}.{3}".format(hh, mm, ss, xxx)

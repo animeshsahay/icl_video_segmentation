@@ -40,7 +40,7 @@ class Segmenter:
             options["stateCallback"]("Step %d / %d: Preparing for face clustering. (This may take a while)" % (options["currStep"], options["steps"]))
             options["currStep"] += 1
             lastClusterFound  = currStart
-            frameCheckLength  = options["clusterLength"]
+            frameCheckLength  = options["segmentLength"]
             currFrameClusters = {}
             newFrameClusters  = {}
             clusters          = {}
@@ -156,7 +156,7 @@ def mergeDefaults(options):
     defaults = {"stateCallback"    : lambda x: None,
                 "progressCallback" : lambda x: None,
                 "currStep"         : 0,
-                "clusterLength"    : 20,
+                "segmentLength"    : 20,
                 "verbose"          : 1}
 
     for k, v in defaults.items():

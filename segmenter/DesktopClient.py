@@ -3,6 +3,7 @@ from PyQt4 import QtCore, QtGui
 from Gui import Ui_MainWindow
 from VideoWrapper import *
 from Client import *
+import FaceClustering
 from SegmentRegister import *
 from VideoInfo import *
 import cv2
@@ -231,7 +232,6 @@ class DesktopClient(QtGui.QMainWindow):
         self.ui.lastFrameButton.setEnabled(enabled)
         self.ui.playNextButton.setEnabled(enabled)
 
-    # TODO : Define a split type for when nothing is ticked
     def getSplitType(self):
         """ Radio button options to SplitType map. """
         if self.ui.blackFramesOption.isChecked():
@@ -240,6 +240,24 @@ class DesktopClient(QtGui.QMainWindow):
             return SplitType.EVERY_X_SECONDS
         if self.ui.onFaceClustersOption.isChecked():
             return SplitType.ON_FACE_CLUSTERS
+
+        return None
+
+    def getClusterType(self):
+        if self.ui.clusterStandard.isChecked():
+            return FaceClustering.standardCluster
+        if self.ui.clusterKMeans.isChecked():
+            return FaceClustering.kMeansCluster
+        if self.ui.clusterMeanShift.isChecked():
+            return FaceClustering.meanShiftCluster
+
+        return None
+
+    def getComparisonMethod(self):
+        if self.ui.comparisonCombo.currentIndex() == 0:
+            return FaceClustering.HistogramComparator
+        if self.ui.comparisonCombo.currentIndex() == 1:
+            return FaceClustering.PCAComparator
 
         return None
 
@@ -280,21 +298,30 @@ class DesktopClient(QtGui.QMainWindow):
 
         cap = None
         try:
-            start = int(self.ui.startFrame.text())
-            end = int(self.ui.endFrame.text())
-            splitType = self.getSplitType()
+            start            = int(self.ui.startFrame.text())
+            end              = int(self.ui.endFrame.text())
+            splitType        = self.getSplitType()
+            clusterType      = self.getClusterType()
+            comparisonMethod = self.getComparisonMethod()
 
             options = {}
             if splitType == SplitType.EVERY_X_SECONDS:
-                options["xSeconds"] = self.ui.xSecs.value()
+                options["xSeconds"] = int(self.ui.xSecs.value())
 
-            options["clusterThreshold"] = self.ui.clusterThreshold.value()
-            options["k"]                = self.ui.kValue.value()
-            options["cutoff"]           = self.ui.shiftCutoff.value()
-            options["maxIterations"]    = self.ui.maxIters.value()
-            options["clusterLength"]    = self.ui.clusterLength.value()
+            options["clusterThreshold"] = float(self.ui.clusterThreshold.value())
+            options["k"]                = int(self.ui.kValue.value())
+            options["cutoff"]           = float(self.ui.shiftCutoff.value())
+            options["maxIterations"]    = int(self.ui.maxIters.value())
+            options["segmentLength"]    = int(self.ui.segmentLength.value())
+            options["audio"]            = str(self.ui.filePath.text())
+            options["clusterAlgorithm"] = clusterType
 
-            cap = Client(str(self.ui.filePath.text()), self.getSplitType(),
+            if clusterType == FaceClustering.standardCluster:
+                options["comparator"]   = comparisonMethod
+            else:
+                options["comparator"]   = FaceClustering.PCAComparator
+
+            cap = Client(str(self.ui.filePath.text()), splitType,
                          lambda x: self.setProgress(x),
                          lambda x: self.setState(x),
                          start, end)
@@ -305,9 +332,9 @@ class DesktopClient(QtGui.QMainWindow):
 
         # create Segmenter object to segment the video
         self.seg = Segmenter()
-        
+
         # call Client.run, which in turn calls Segmenter.run to perform the segmentation
-        segmentNames = cap.run(self.seg, self.ui.highlightFacesOption.isChecked(), "DIVX", "avi", True, options)
+        segmentNames = cap.run(self.seg, self.ui.highlightFacesOption.isChecked(), "MP42", "mkv", True, options)
 
         if "clusters" in options:
             self.fillFaces(segmentNames, options["clusters"])

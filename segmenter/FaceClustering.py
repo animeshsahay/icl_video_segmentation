@@ -21,6 +21,8 @@ class HistogramComparator(FaceComparator):
 
 class PCAComparator(FaceComparator):
     def __init__(self, faces):
+        if len(faces) > 250:
+            faces = random.sample(faces, 250)
         self.faces = [cv2.cvtColor(face, cv2.COLOR_RGB2GRAY) for _, face in faces]
         self.recompute()
 
@@ -182,7 +184,7 @@ def kMeansCluster(faces, options):
     assert(options["comparator"] == PCAComparator)
 
     group = options["comparator"](faces)
-    faces = [(frame, group.project(cv2.cvtColor(face, cv2.COLOR_RGB2GRAY))) for frame, face in faces]
+    faces = [(i, group.project(cv2.cvtColor(face, cv2.COLOR_RGB2GRAY))) for i, (frame, face) in enumerate(faces)]
 
     initial = random.sample(faces, options["k"])
     clusters = [Cluster([f]) for f in initial]
@@ -197,7 +199,7 @@ def kMeansCluster(faces, options):
         biggestShift = np.max([c.update(l) for l, c in zip(lists, clusters)])
         iterations += 1
 
-    return [[frame for frame, _ in cluster.faces] for cluster in clusters]
+    return [[i for i, _ in cluster.faces] for cluster in clusters]
 
 def meanShiftCluster(faces, options):
     assert(options["comparator"] == PCAComparator)

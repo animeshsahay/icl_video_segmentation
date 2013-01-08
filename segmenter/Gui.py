@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'segmenter/gui.ui'
 #
-# Created: Mon Jan  7 12:49:42 2013
+# Created: Tue Jan  8 18:47:02 2013
 #      by: PyQt4 UI code generator 4.9.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -172,12 +172,12 @@ class Ui_MainWindow(object):
         self.label_11.setIndent(20)
         self.label_11.setObjectName(_fromUtf8("label_11"))
         self.horizontalLayout_8.addWidget(self.label_11)
-        self.clusterLength = QtGui.QSpinBox(self.verticalLayoutWidget_4)
-        self.clusterLength.setMinimum(1)
-        self.clusterLength.setMaximum(1000000)
-        self.clusterLength.setProperty("value", 20)
-        self.clusterLength.setObjectName(_fromUtf8("clusterLength"))
-        self.horizontalLayout_8.addWidget(self.clusterLength)
+        self.segmentLength = QtGui.QSpinBox(self.verticalLayoutWidget_4)
+        self.segmentLength.setMinimum(1)
+        self.segmentLength.setMaximum(1000000)
+        self.segmentLength.setProperty("value", 20)
+        self.segmentLength.setObjectName(_fromUtf8("segmentLength"))
+        self.horizontalLayout_8.addWidget(self.segmentLength)
         self.verticalLayout_6.addLayout(self.horizontalLayout_8)
         self.everyXSecondsOption = QtGui.QRadioButton(self.verticalLayoutWidget_4)
         self.everyXSecondsOption.setObjectName(_fromUtf8("everyXSecondsOption"))
@@ -242,6 +242,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_6 = QtGui.QHBoxLayout()
         self.horizontalLayout_6.setObjectName(_fromUtf8("horizontalLayout_6"))
         self.label_9 = QtGui.QLabel(self.verticalLayoutWidget_3)
+        self.label_9.setIndent(20)
         self.label_9.setObjectName(_fromUtf8("label_9"))
         self.horizontalLayout_6.addWidget(self.label_9)
         self.comparisonCombo = QtGui.QComboBox(self.verticalLayoutWidget_3)
@@ -433,7 +434,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(1)
+        self.stackedWidget.setCurrentIndex(0)
         self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.startFrame, self.endFrame)
@@ -462,7 +463,7 @@ class Ui_MainWindow(object):
         self.label_3.setText(_translate("MainWindow", "End frame : ", None))
         self.label.setText(_translate("MainWindow", "Split type", None))
         self.onFaceClustersOption.setText(_translate("MainWindow", "On face clusters", None))
-        self.label_11.setText(_translate("MainWindow", "Max cluster length:", None))
+        self.label_11.setText(_translate("MainWindow", "Max segment length:", None))
         self.everyXSecondsOption.setText(_translate("MainWindow", "Every X seconds", None))
         self.label_10.setText(_translate("MainWindow", "X:", None))
         self.blackFramesOption.setText(_translate("MainWindow", "On black frames", None))
