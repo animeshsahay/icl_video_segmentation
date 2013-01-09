@@ -13,6 +13,7 @@ from multiprocessing import Process, Queue
 from Segmenter import *
 import csv
 import os.path
+import ast
 
 class DesktopClient(QtGui.QMainWindow):
     def __init__(self, parent=None):
@@ -22,6 +23,7 @@ class DesktopClient(QtGui.QMainWindow):
 
         self.segments = SegmentRegister([])
         self.basicInfo = None
+        self.faceIndexing = []
 
         QtCore.QObject.connect(self.ui.segmentButton, QtCore.SIGNAL("clicked()"), self.segment)
         QtCore.QObject.connect(self.ui.browseButton, QtCore.SIGNAL("clicked()"), self.browse)
@@ -75,15 +77,14 @@ class DesktopClient(QtGui.QMainWindow):
         self.selectListEntry()
         self.selectSegment()
 
-    def fillFaces(self, segments, clusters):
-        model = QtGui.QStandardItemModel()
+    def genIndexing(self, segments, clusters):
+        self.faceIndexing = []
 
         for i, cluster in enumerate(clusters):
             image = cv2.resize(cluster[0][1], (100, 100))
+            name = "Face {0}".format(i + 1)
             file = "{0}/face-{1}.jpg".format(directory, random.random())
             cv2.imwrite(file, image)
-            item = QtGui.QStandardItem(QtGui.QIcon(file), "Face {0}".format(i + 1))
-            item.setEditable(True)
 
             segmentSet = set()
             for frame, _ in cluster:
@@ -92,6 +93,14 @@ class DesktopClient(QtGui.QMainWindow):
                         segmentSet.add((start, end))
 
             segmentList = sorted(list(segmentSet))
+            self.faceIndexing.append((name, file, segmentList))
+
+    def fillFaces(self):
+        model = QtGui.QStandardItemModel()
+        for name, file, segmentList in self.faceIndexing:
+            item = QtGui.QStandardItem(QtGui.QIcon(file), name)
+            item.setEditable(True)
+
             for start, end in segmentList:
                 item2 = QtGui.QStandardItem("Segment %d - %d" % (start, end))
                 item2.setEditable(False)
@@ -118,11 +127,20 @@ class DesktopClient(QtGui.QMainWindow):
         file = str(QtGui.QFileDialog.getSaveFileName(self, "Save Project File"))
 
         try:
+            os.mkdir(file)
             self.segments.save(file)
+            self.saveClusters(file)
         except IOError:
             self.errorBox("Charlie")
         except OSError:
             self.errorBox("Charlie")
+
+    def saveClusters(self, file):
+        with open(os.path.join(file, "indexing.csv"), 'wb') as raw:
+            f = csv.writer(raw)
+            for name, filename, segments in self.faceIndexing:
+                f.writerow([name, os.path.split(filename)[1], segments])
+                shutil.copy(filename, file)
 
     def loadCSV(self):
         # TODO : restrict to CSV files
@@ -130,11 +148,21 @@ class DesktopClient(QtGui.QMainWindow):
         if file == "": return
 
         segmentNames = []
+        self.faceIndexing = []
         try:
             with open(file, 'rb') as raw:
                 f = csv.reader(raw)
                 for [s, e, name] in f:
-                    segmentNames.append((os.path.join(os.path.dirname(file), name), s, e))
+                    segmentNames.append((os.path.join(os.path.dirname(file), name), int(s), int(e)))
+            indexFile = os.path.join(os.path.dirname(file), "indexing.csv")
+            if os.path.exists(indexFile):
+                with open(indexFile, 'rb') as raw:
+                    f = csv.reader(raw)
+                    for arr in f:
+                        name     = arr[0]
+                        filename = os.path.join(os.path.dirname(file), arr[1])
+                        vals     = ast.literal_eval(arr[2])
+                        self.faceIndexing.append((name, filename, vals))
         except IOError:
             self.errorBox("Roxana")
             return
@@ -142,6 +170,7 @@ class DesktopClient(QtGui.QMainWindow):
             self.errorBox("Agnieszka")
             return
 
+        self.fillFaces()
         self.fillList(segmentNames)
 
         #load segments into the GUI, ignoring start and end frames
@@ -358,8 +387,11 @@ class DesktopClient(QtGui.QMainWindow):
         segmentNames = cap.run(self.seg, self.ui.highlightFacesOption.isChecked(), "MP42", "mkv", True, options)
 
         if "clusters" in options:
-            self.fillFaces(segmentNames, options["clusters"])
+            self.genIndexing(segmentNames, options["clusters"])
+        else:
+            self.genIndexing(segmentNames, [])
 
+        self.fillFaces()
         self.fillList(segmentNames)
 
         #load segments into the GUI, ignoring start and end frames
@@ -373,7 +405,6 @@ class DesktopClient(QtGui.QMainWindow):
 
     def fillList(self, segments):
         model = QtGui.QStandardItemModel()
-        #model.insertColumn
 
         for i, (_, start, end) in enumerate(segments):
             item = QtGui.QStandardItem('{0} - frames {1} to {2}'.format(i+1, start, end))

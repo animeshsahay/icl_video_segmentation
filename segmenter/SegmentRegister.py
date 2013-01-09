@@ -51,7 +51,6 @@ class SegmentRegister:
         return self.index
 
     def save(self, fileName):
-        os.mkdir(fileName)
         with open(os.path.join(fileName, "segments.csv"), 'wb') as raw:
             f = csv.writer(raw)
             for (name, s, e) in self.segments:

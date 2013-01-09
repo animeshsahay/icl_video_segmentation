@@ -68,10 +68,13 @@ class VideoWrapper:
         if audiofile and split[1] == "mkv":
             tmpfilename = "{0}.tmp.{1}".format(split[0], split[1])
             ffmpegcall = ["ffmpeg", "-i", audiofile, "-itsoffset", toOffset(-self.start / self.fps), "-i", filename, "-map", "1:0", "-map", "0:1", "-y", tmpfilename]
-            with open(devnull, "w") as DEVNULL:
-                call(["rm", "-f", tmpfilename], stdout = DEVNULL, stderr = DEVNULL)
-                call(ffmpegcall, stdout = DEVNULL, stderr = DEVNULL)
-                call(["mv", tmpfilename, filename], stdout = DEVNULL, stderr = DEVNULL)
+            try:
+                with open(devnull, "w") as DEVNULL:
+                    call(["rm", "-f", tmpfilename], stdout = DEVNULL, stderr = DEVNULL)
+                    call(ffmpegcall, stdout = DEVNULL, stderr = DEVNULL)
+                    call(["mv", tmpfilename, filename], stdout = DEVNULL, stderr = DEVNULL)
+            except OSError:
+                pass
 
     def getSegment(self, start, end):
         """
