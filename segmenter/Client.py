@@ -8,12 +8,14 @@ from VideoWrapper import VideoWrapper
 directory = tempfile.mkdtemp()
 
 class Client:
-    # Initialise the client class.
-    # The video can be of type string, cv image or video wrapper.
     def __init__(self, video, splitType,
                  progressCallback = lambda percent: None,
                  stateCallback = lambda text: None,
                  start = None, end = None):
+        """
+        Initialise the client class.
+        The video can be of type string, cv image or video wrapper.
+        """
         self.splitType = splitType
         self.progressCallback = progressCallback
         self.stateCallback    = stateCallback
@@ -30,8 +32,10 @@ class Client:
         else:
             assert 0, ("Unknown type of video parameter (%s)" % type(video))
 
-    # Run the correct functions based on what the client wants.
     def run(self, seg, highlight, codec, extension, qualified, options = {}):
+        """
+        Run the correct functions based on what the client wants.
+        """
         # set arguments in Segmenter and start the segmentation        
         options["videoWrapper"]     = self.videoWrapper
         options["splitType"]        = self.splitType

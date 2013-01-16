@@ -4,6 +4,7 @@ import shutil
 import csv
 
 class SegmentRegister:
+    """ Simple segment storage. All functions names are self-explanatory """
     def __init__(self, segments):
         self.segments = segments
         self.index = 0

@@ -250,15 +250,17 @@ class DesktopClient(QtGui.QMainWindow):
         self.selectListEntry()
 
     def play(self):
-        # Dirty hack to fix "Play" button random behavior
+        """ Plays the current segment. """
         self.load(self.segments.current())
         self.ui.videoPlayer.play()
 
     def playNext(self):
+        """ Plays the next segment. """
         self.next()
         self.play()
 
     def selectListEntry(self):
+        """ Select an entry from the list to synchronise player/face indexing. """
         index = self.ui.segmentList.model().index(self.segments.currIndex(), 0, QtCore.QModelIndex())
         self.ui.segmentList.selectionModel().select(index, self.ui.segmentList.selectionModel().ClearAndSelect)
 
@@ -292,6 +294,7 @@ class DesktopClient(QtGui.QMainWindow):
         return None
 
     def getClusterType(self):
+        """ Radio button options for cluster types. """
         if self.ui.clusterStandard.isChecked():
             return FaceClustering.standardCluster
         if self.ui.clusterKMeans.isChecked():
@@ -302,6 +305,7 @@ class DesktopClient(QtGui.QMainWindow):
         return None
 
     def getComparisonMethod(self):
+        """ Radio button options for comparison methods. """
         if self.ui.comparisonCombo.currentIndex() == 0:
             return FaceClustering.HistogramComparator
         if self.ui.comparisonCombo.currentIndex() == 1:
@@ -310,6 +314,7 @@ class DesktopClient(QtGui.QMainWindow):
         return None
 
     def reset(self):
+        """ Reset the controls to their defaults. """
         self.setControls(False)
         self.ui.videoTitleLabel.setText("Title:")
         self.ui.videoLengthLabel.setText("Video length:")
@@ -331,10 +336,12 @@ class DesktopClient(QtGui.QMainWindow):
         self.showOptionsScreen()
 
     def setProgress(self, x):
+        """ Set the progress bar when running. """
         self.ui.segProgress.setProperty("value", x),
         QtGui.QApplication.processEvents()
 
     def setState(self, x):
+        """ Set the state text when running. """
         self.ui.barState.setText(x)
         QtGui.QApplication.processEvents()
 
@@ -346,6 +353,7 @@ class DesktopClient(QtGui.QMainWindow):
         self.setControls(False)
         self.currSegment = 0
 
+        #Get all the correct options and create a client
         cap = None
         try:
             start            = int(self.ui.startFrame.text())
@@ -404,6 +412,7 @@ class DesktopClient(QtGui.QMainWindow):
         self.selectListEntry()
 
     def fillList(self, segments):
+        """ Fill the frames list with the correct segments. """
         model = QtGui.QStandardItemModel()
 
         for i, (_, start, end) in enumerate(segments):
@@ -414,10 +423,12 @@ class DesktopClient(QtGui.QMainWindow):
         self.ui.segmentList.setModel(model)
 
     def showVideoScreen(self):
+        """ Switch to the video screen. """
         self.ui.stackedWidget.setCurrentIndex(1)
         self.resize(1200, 500)
 
     def showOptionsScreen(self):
+        """ Switch to the options screen. """
         self.ui.stackedWidget.setCurrentIndex(0)
         self.resize(581, 440)
 

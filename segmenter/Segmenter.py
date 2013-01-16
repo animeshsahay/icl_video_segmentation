@@ -153,6 +153,9 @@ def checkBlackFrame(frame):
     return True
 
 def mergeDefaults(options):
+    """
+    Merges the default values into the options dictionary
+    """
     defaults = {"stateCallback"    : lambda x: None,
                 "progressCallback" : lambda x: None,
                 "currStep"         : 0,

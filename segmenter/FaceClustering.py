@@ -3,23 +3,19 @@ import math
 import numpy as np
 import random
 
-class FaceComparator:
-    def __init__(self, faces):
-        raise "Unimplemented function"
-
-    def compare(self, face1, face2):
-        raise "Unimplemented function"
-
-class HistogramComparator(FaceComparator):
+class HistogramComparator:
+    """ Compares faces by histograms. """
     def __init__(self, faces):
         pass
 
     def compare(self, f1, f2):
+        """ Compare two faces. """
         frame1, face1 = f1
         frame2, face2 = f2
         return compareFaces(face1, face2)
 
-class PCAComparator(FaceComparator):
+class PCAComparator:
+    """ Compares faces by PCA techniques. """
     def __init__(self, faces):
         if len(faces) > 250:
             faces = random.sample(faces, 250)
@@ -27,6 +23,7 @@ class PCAComparator(FaceComparator):
         self.recompute()
 
     def compare(self, f1, f2):
+        """ Compares two faces. """
         frame1, face1 = f1
         frame2, face2 = f2
 
@@ -40,17 +37,18 @@ class PCAComparator(FaceComparator):
         return np.abs(f1p - f2p).sum()
 
     def project(self, iface):
+        """ Projects faces into the PCA system. """
         face = (iface - self.mean).flatten()
         return np.dot(self.eigvecs.T, face)
 
     def recompute(self):
+        """ Recompute the PCA dimensions. """
         _faces = [face.flatten() for face in self.faces]
         faces  = np.asarray(_faces)
 
         mean          = faces.mean(axis = 0)
         unbiasedFaces = faces - mean
 
-        #TODO: Find out value when only one face
         cov              = np.dot(unbiasedFaces, unbiasedFaces.transpose()) / (unbiasedFaces.shape[0] - 1)
         eigvals, eigvecs = np.linalg.eig(cov)
         eigvecs          = np.dot(unbiasedFaces.transpose(), eigvecs)
@@ -60,7 +58,6 @@ class PCAComparator(FaceComparator):
         self.eigvecs = eigvecs[:, sortedidxs]
 
         self.mean = mean.reshape(self.faces[0].shape)
-        #cv2.imwrite("mean-%f.jpg" % random.random(), np.array(self.mean, dtype=np.uint8))
 
         projections = np.asarray([self.project(face) for face in self.faces])
         self.minvals = projections.min(axis = 0)
@@ -68,6 +65,7 @@ class PCAComparator(FaceComparator):
         self.diffs   = np.abs(self.maxvals - self.minvals)
 
 def convertFaces(video):
+    """ Convert faces to the correct sizes. """
     X = []
     biggestFace = (0, 0)
     faceList = video.getFaces()
@@ -84,6 +82,7 @@ def convertFaces(video):
     return map(lambda (frame, face): (frame, cv2.resize(face, biggestFace)), X)
 
 def compareFaces(f1, f2):
+    """ Compare faces using histograms. """
     h1 = cv2.calcHist([f1], [0], None, [256], [0, 255])
     h2 = cv2.calcHist([f2], [0], None, [256], [0, 255])
 
@@ -93,6 +92,7 @@ def compareFaces(f1, f2):
     return cv2.compareHist(h1, h2, cv2.cv.CV_COMP_BHATTACHARYYA)
 
 def tarjan(graph):
+    """ Tarjan graph clustering algorithm. """
     output = []
 
     index = [0]
@@ -133,6 +133,7 @@ def tarjan(graph):
     return output
 
 def clusterFaces(faces, options):
+    """ Cluster faces using the options listed. This includes the algorithm to use. """
     if faces is None or faces == []:
         return []
 
@@ -142,6 +143,7 @@ def clusterFaces(faces, options):
     return [[faces[i] for i in l] for l in clusters]
 
 def standardCluster(faces, options):
+    """ Simple clustering algorithm using tarjan. """
     similarities = {}
     clusters = []
 
@@ -163,6 +165,7 @@ def standardCluster(faces, options):
     return tarjan(similarities)
 
 class Cluster:
+    """ Cluster container. """
     def __init__(self, faces):
         assert(len(faces) > 0)
         assert(all([faces[0][1].shape == face.shape for _, face in faces]))
@@ -174,6 +177,7 @@ class Cluster:
         return str([frame for frame, _ in self.faces])
 
     def update(self, faces):
+        """ Updates the clusters centre. """
         assert(len(faces) > 0)
         self.faces = faces
         oldCentre = self.centre
@@ -181,6 +185,7 @@ class Cluster:
         return getDist(oldCentre, self.centre)
 
 def kMeansCluster(faces, options):
+    """ Cluster faces using k-means. """
     assert(options["comparator"] == PCAComparator)
 
     group = options["comparator"](faces)
@@ -191,6 +196,8 @@ def kMeansCluster(faces, options):
 
     biggestShift = options["cutoff"]
     iterations = 0
+
+    # Iterate through until we reach the thresholds.
     while biggestShift >= options["cutoff"] or iterations == options["maxIterations"]:
         lists = [[] for _ in clusters]
         for frame, face in faces:
@@ -202,6 +209,7 @@ def kMeansCluster(faces, options):
     return [[i for i, _ in cluster.faces] for cluster in clusters]
 
 def meanShiftCluster(faces, options):
+    """ Cluster faces using mean-shift. """
     assert(options["comparator"] == PCAComparator)
 
     group = options["comparator"](faces)
@@ -223,6 +231,7 @@ def meanShiftCluster(faces, options):
     seeds = [Cluster([face]) for face in faces]
     clusters = []
 
+    #Work out the neighbours of the seeds
     for seed in seeds:
         while True:
             neighbours = [(frame, face) for frame, face in faces if getDist(seed.centre, face) <= bandwidth]
@@ -236,6 +245,7 @@ def meanShiftCluster(faces, options):
     clusters.sort(key = lambda s: len(s.faces), reverse = True)
     unique = np.ones(len(clusters), dtype=np.bool)
 
+    #Remove duplicates
     for i, cluster in enumerate(clusters):
         if unique[i]:
             neighbours = [n for n, c in enumerate(clusters)
@@ -247,6 +257,7 @@ def meanShiftCluster(faces, options):
 
     clusters = [[] for _ in centres]
 
+    #Convert to the correct return format
     for i, (_, face) in enumerate(faces):
         idx = np.argmin([getDist(face, centre) for centre in centres])
         clusters[idx].append(i)
@@ -254,11 +265,17 @@ def meanShiftCluster(faces, options):
     return clusters
 
 def getDist(arr1, arr2):
+    """
+    Return the distance between two arrays
+    """
     assert(arr1.shape == arr2.shape)
     distSqrd = np.sum(np.power(arr2 - arr1, 2))
     return math.sqrt(distSqrd)
 
 def mergeDefaults(options):
+    """
+    Merge the default values into the options dictionary.
+    """
     defaults = {"clusterThreshold" : 0.63,
                 "comparator"       : PCAComparator,
                 "clusterAlgorithm" : meanShiftCluster,
