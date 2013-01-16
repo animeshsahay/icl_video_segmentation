@@ -152,22 +152,22 @@ def within((a, b), (c, d)):
     Assumes that the ranges are valid
     i.e. a <= b and c <= d
     """
-    return a >= c and a < d and b <= d
+    return a >= c and b <= d
 
 def toOffset(secs):
-    if secs >= 0:
-        hh = 1
-    else:
-        hh = -1
+    if secs < 0:
+        sign = "-"
         secs = -secs
+    else:
+        sign = ""
 
-    hh *= int(secs / (60 * 60))
+    hh = int(secs // (60 * 60))
     secs -= hh * 60 * 60
-    mm = int(secs / 60)
+    mm = int(secs // 60)
     secs -= mm * 60
     ss = int(secs)
     secs -= ss
     xxx = secs
     assert(hh < 100 and mm < 60 and ss < 60 and xxx < 1000)
     xxx = "{0:.3f}".format(xxx).split(".", 1)[1]
-    return "{0}:{1}:{2}.{3}".format(hh, mm, ss, xxx)
+    return "{0}{1}:{2}:{3}.{4}".format(sign, hh, mm, ss, xxx)

@@ -10,14 +10,14 @@ class VideoInfo:
         return int(self.video.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT))
 
     def length(self):
-        return int(self.numberOfFrames() / self.video.get(cv2.cv.CV_CAP_PROP_FPS))
+        return int(self.numberOfFrames() // self.video.get(cv2.cv.CV_CAP_PROP_FPS))
 
     # Pretty print methods - nice formatting of video information.
     def prettyTitle(self):
-        if self.info.title == None:
+        if self.info.title is None:
             return "Unknown"
 
-        return self.video.title
+        return self.info.title
     
     def prettyLength(self):
         return str(self.length()) + " seconds (" + str(self.numberOfFrames()) + " frames)"
